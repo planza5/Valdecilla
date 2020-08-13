@@ -33,6 +33,23 @@ public class CanvasViewHandler{
         changed();
     }
 
+    private void click(View view, MotionEvent event) {
+        //click
+        Node clicked2 = getClickedNode(view, event.getX(), event.getY());
+
+        if (clicked2 == null) {
+            Point p = Utils.traRoTra(event.getX(), event.getY(), view.getWidth() / 2, view.getHeight() / 2, state.dx, state.dy, -AppState.angle);
+
+            p.x = Math.round((p.x) / Ctes.GRID) * Ctes.GRID;
+            p.y = Math.round((p.y) / Ctes.GRID) * Ctes.GRID;
+
+            if (canEdit) {
+                Node node = new Node(p.x, p.y);
+                state.app.nodes.add(node);
+                changed();
+            }
+        }
+    }
 
     public void handleUp(View view,MotionEvent event){
         state.currentX=event.getX();
@@ -42,93 +59,93 @@ public class CanvasViewHandler{
         int distance= MathUtils.getDistance(state.lastX,state.lastY,event.getX(),event.getY());
 
         if(distance<50){
-            //click
-            Node clicked2=getClickedNode(view,event.getX(),event.getY());
-
-            if(clicked2==null) {
-
-                /*Point p=Utils.translate(event.getX(),event.getY(),view.getWidth()/2,view.getHeight()/2);
-                p=Utils.rotate(-AppState.angle,p.x,p.y);
-                p=Utils.translate(p.x+state.dx,p.y-state.dy,-view.getWidth()/2,-view.getHeight()/2);*/
-
-                Point p=Utils.traRoTra(event.getX(),event.getY(),view.getWidth()/2,view.getHeight()/2,state.dx,state.dy,-AppState.angle);
-
-                p.x=Math.round((p.x)/Ctes.GRID)*Ctes.GRID;
-                p.y=Math.round((p.y)/Ctes.GRID)*Ctes.GRID;
-
-                if(canEdit) {
-                    Node node = new Node(p.x, p.y);
-                    state.app.nodes.add(node);
-                    changed();
-                }
-            }
+            click(view, event);
         }else{
-            //drag
-            Node clicked2=getClickedNode(view,event.getX(),event.getY());
+            drag(view, event);
+        }
+    }
 
-            if(clicked2==null && state.clicked1 !=null){
-                Point p=new Point(event.getX(),event.getY());
-
-
-                p=Utils.traRoTra(p.x,p.y,view.getWidth()/2,view.getHeight()/2,-AppState.angle);
-                p.x=Math.round((p.x+state.dx)/Ctes.GRID)*Ctes.GRID;
-                p.y=Math.round((p.y-state.dy)/Ctes.GRID)*Ctes.GRID;
-
-                if(canEdit) {
-                    state.clicked1.x = p.x;
-                    state.clicked1.y = p.y;
-                    changed();
-                }
-            }else if(clicked2!=null && state.clicked1 !=null){
-                if(!canEdit){
-                    return;
-                }
-
-                Path path=state.getPath(state.selectedColor,state.clicked1,clicked2);
-
-                if(path==null) {
-                    path = new Path();
-                    path.a = state.clicked1;
-                    path.b = clicked2;
-                    path.color = state.selectedColor;
-                    state.app.paths.add(path);
-                    changed();
-                }else{
-                    state.app.paths.remove(path);
-                    changed();
-                }
-            }else if(clicked2==null && state.clicked1==null){
-                Point p1=new Point(state.lastX,state.lastY);
-                Point p2=new Point(event.getX(),event.getY());
-
-                Node nodeToRemove=null;
-                Path pathToRemove=null;
-
-                if(canEdit){
-                    nodeToRemove=IntersectionUtils.getIntersection(state,state.app.nodes,view,p1,p2);
-
-                    if(nodeToRemove!=null){
-                        removePaths(state,nodeToRemove);
-                        state.app.nodes.remove(nodeToRemove);
-                    }else{
-                        pathToRemove=IntersectionUtils.getIntersectionPath(state,state.app.paths,view,p1,p2);
-
-                        if(pathToRemove!=null){
-                            state.app.paths.remove(pathToRemove);
-                        }
-                    }
+    private void dragNodeInView(View view, MotionEvent event) {
+        Point p = new Point(event.getX(), event.getY());
 
 
-                }
+        p = Utils.traRoTra(p.x, p.y, view.getWidth() / 2, view.getHeight() / 2, -AppState.angle);
+        p.x = Math.round((p.x + state.dx) / Ctes.GRID) * Ctes.GRID;
+        p.y = Math.round((p.y - state.dy) / Ctes.GRID) * Ctes.GRID;
 
+        boolean existsNode = false;
 
-
-
-            } else if (state.clicked1 != null && state.clicked1 == clicked2) {
-                state.app.nodes.remove(state.clicked1);
-                changed();
+        for (Node one : state.app.nodes) {
+            if (one.x == p.x && one.y == p.y) {
+                existsNode = true;
+                break;
             }
+        }
 
+        if (canEdit && !existsNode) {
+            state.clicked1.x = p.x;
+            state.clicked1.y = p.y;
+            changed();
+        }
+    }
+
+    private void dragNodeInNode(View view, Node clicked2, MotionEvent event) {
+        Path path = state.getPath(state.selectedColor, state.clicked1, clicked2);
+
+        if (path == null) {
+            path = new Path();
+            path.a = state.clicked1;
+            path.b = clicked2;
+            path.color = state.selectedColor;
+            state.app.paths.add(path);
+            changed();
+        } else {
+            state.app.paths.remove(path);
+            changed();
+        }
+    }
+
+    private void dragViewInView(View view, MotionEvent event) {
+        Point p1 = new Point(state.lastX, state.lastY);
+        Point p2 = new Point(event.getX(), event.getY());
+
+        Node nodeToRemove = null;
+        Path pathToRemove = null;
+
+        nodeToRemove = IntersectionUtils.getIntersection(state, state.app.nodes, view, p1, p2);
+
+        if (nodeToRemove != null) {
+            removePaths(state, nodeToRemove);
+            state.app.nodes.remove(nodeToRemove);
+        } else {
+            pathToRemove = IntersectionUtils.getIntersectionPath(state, state.app.paths, view, p1, p2);
+
+            if (pathToRemove != null) {
+                state.app.paths.remove(pathToRemove);
+            }
+        }
+
+        if (nodeToRemove == null && pathToRemove == null) {
+            p1 = Utils.traRoTra(p1.x, p1.y, view.getWidth() / 2, view.getHeight() / 2, -AppState.angle);
+            p2 = Utils.traRoTra(p2.x, p2.y, view.getWidth() / 2, view.getHeight() / 2, -AppState.angle);
+            p1 = Utils.translate(p1.x, p1.y, -state.dx, state.dy);
+            p2 = Utils.translate(p2.x, p2.y, -state.dx, state.dy);
+
+            state.dx -= p2.x - p1.x;
+            state.dy += p2.y - p1.y;
+        }
+    }
+
+    private void drag(View view, MotionEvent event) {
+        //drag
+        Node clicked2 = getClickedNode(view, event.getX(), event.getY());
+
+        if (state.clicked1 != null && clicked2 == null) {
+            dragNodeInView(view, event);
+        } else if (state.clicked1 != null && clicked2 != null && canEdit) {
+            dragNodeInNode(view, clicked2, event);
+        } else if (clicked2 == null && state.clicked1 == null && canEdit) {
+            dragViewInView(view, event);
         }
     }
 
