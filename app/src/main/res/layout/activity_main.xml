@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:selectAllOnFocus="true"
+    tools:context=".MainActivity">
+
+        <LinearLayout
+            android:id="@+id/linearLayoutVertical"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_margin="5dp"
+            android:id="@+id/linearLayoutHorizontal1"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+
+            android:gravity="center"
+            android:orientation="horizontal">
+                <Button
+                    android:layout_marginHorizontal="5dp"
+                    android:background="@drawable/custom_border"
+                    android:id="@+id/save"
+                    android:onClick="clickSave"
+                    android:text="Save"
+                    android:textSize="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"/>
+
+                <Button
+                    android:layout_marginHorizontal="5dp"
+                    android:background="@drawable/custom_border"
+                    android:id="@+id/saveas"
+                    android:onClick="clickSaveAs"
+                    android:text="Save As..."
+                    android:textSize="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"/>
+
+                <Button
+                    android:layout_marginHorizontal="5dp"
+                    android:background="@drawable/custom_border"
+                    android:id="@+id/load"
+                    android:onClick="clickLoad"
+                    android:text="Load"
+                    android:textSize="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"/>
+
+
+                <Button
+                    android:layout_marginHorizontal="5dp"
+                    android:background="@drawable/custom_border"
+                    android:id="@+id/test"
+                    android:onClick="clickTest"
+                    android:text="Test"
+                    android:textSize="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"/>
+        </LinearLayout>
+
+                <com.plm.valdecilla.CanvasView
+                    android:layout_margin="5dp"
+                    android:background="@drawable/custom_border"
+                    android:id="@+id/canvas1"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.7"/>
+
+                <com.plm.valdecilla.SubCanvasView
+                    android:layout_margin="5dp"
+                    android:background="@drawable/custom_border"
+                    android:id="@+id/canvas2"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+
+
+                <LinearLayout
+                        android:id="@+id/linearLayoutHorizontal"
+                        android:layout_margin="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="0.2"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <ImageButton
+                            android:layout_marginHorizontal="5dp"
+                            android:background="@drawable/custom_border"
+                            android:onClick="rotate90left"
+                            android:padding="5dp"
+                            android:src="@drawable/rotate_left"
+                            android:scaleType="fitCenter"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"/>
+
+                        <Spinner
+                            android:layout_marginHorizontal="5dp"
+                            android:background="@drawable/custom_border"
+                            android:padding="2dp"
+                            android:id="@+id/spinner"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"/>
+
+
+                        <ImageButton
+                            android:layout_marginHorizontal="5dp"
+                            android:background="@drawable/custom_border"
+                            android:padding="5dp"
+                            android:id="@+id/undo"
+                            android:onClick="undo"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/undo"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"/>
+
+                        <ImageButton
+                            android:layout_marginHorizontal="5dp"
+                            android:background="@drawable/custom_border"
+                            android:padding="5dp"
+                            android:id="@+id/redo"
+                            android:onClick="redo"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/redo"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"/>
+
+
+                        <ToggleButton
+                            android:layout_marginHorizontal="5dp"
+                            android:background="@drawable/custom_border"
+                            android:id="@+id/editButton"
+                            android:textOff="E"
+                            android:textOn="X"
+                            android:textSize="10dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"/>
+
+                        <ImageButton
+                            android:layout_marginHorizontal="5dp"
+                            android:clickable="true"
+                            android:onClick="rotate90right"
+                            android:background="@drawable/custom_border"
+                            android:padding="5dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/rotate_right"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"/>
+                </LinearLayout>
+
+
+        </LinearLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
