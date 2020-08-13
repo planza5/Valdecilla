@@ -1,9 +1,6 @@
 package com.plm.valdecilla;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Canvas;
 import android.text.InputType;
 import android.text.method.ScrollingMovementMethod;
 import android.view.MotionEvent;
@@ -24,7 +21,7 @@ import com.plm.valdecilla.utils.Utils;
 import java.util.Iterator;
 
 
-public class CanvasViewHandler{
+public class CanvasViewHandler {
     private final AppState state;
     public boolean canEdit=true;
 
@@ -38,7 +35,8 @@ public class CanvasViewHandler{
         Node clicked2 = getClickedNode(view, event.getX(), event.getY());
 
         if (clicked2 == null) {
-            Point p = Utils.traRoTra(event.getX(), event.getY(), view.getWidth() / 2, view.getHeight() / 2, state.dx, state.dy, -AppState.angle);
+            //No intersection
+            Point p = Utils.traRoTra(event.getX(), event.getY(), view.getWidth() / 2, view.getHeight() / 2, state.dx, -state.dy, -AppState.angle);
 
             p.x = Math.round((p.x) / Ctes.GRID) * Ctes.GRID;
             p.y = Math.round((p.y) / Ctes.GRID) * Ctes.GRID;
@@ -176,7 +174,7 @@ public class CanvasViewHandler{
     }
 
     public Point getAngled(View view,float x, float y) {
-        return Utils.traRoTra(x,y,view.getWidth()/2,view.getHeight()/2,state.dx,state.dy,AppState.angle);
+        return Utils.traRoTra(x, y, view.getWidth() / 2, view.getHeight() / 2, state.dx, -state.dy, AppState.angle);
     }
 
     public void handleMove(View view,MotionEvent event){
@@ -204,7 +202,7 @@ public class CanvasViewHandler{
 
 
     private boolean isNodeClicked(View view,Node node, float x, float y){
-        Point p=Utils.traRoTra(x,y,view.getWidth()/2,view.getHeight()/2,state.dx,state.dy,-AppState.angle);
+        Point p = Utils.traRoTra(x, y, view.getWidth() / 2, view.getHeight() / 2, state.dx, -state.dy, -AppState.angle);
         return p.x>node.x-Ctes.RADIUS && p.x<node.x+Ctes.RADIUS && p.y>node.y-Ctes.RADIUS && p.y<node.y+Ctes.RADIUS;
 
     }

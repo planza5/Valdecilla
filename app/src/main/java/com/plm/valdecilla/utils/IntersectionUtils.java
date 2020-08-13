@@ -13,6 +13,7 @@ import java.util.List;
 
 public class IntersectionUtils
 {
+
     public static Path getIntersectionPath(AppState state, List<Path> paths, View view, com.plm.valdecilla.Point p1, com.plm.valdecilla.Point p2){
         float tx1,tx2,tx3,tx4;
         float ty1,ty2,ty3,ty4;

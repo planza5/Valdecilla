@@ -8,6 +8,23 @@ import com.plm.valdecilla.Point;
 import com.plm.valdecilla.model.Node;
 
 public class Utils {
+    public static Point traRoTra(Point p, float originx, float originy, float dx, float dy, double degrees) {
+        p.x = p.x - originx;
+        p.y = p.y - originy;
+        p = rotate(degrees, p.x, p.y);
+        p.x = p.x + originx + dx;
+        p.y = p.y + originy + dy;
+        return p;
+    }
+
+    public static Point traRoTra(float x, float y, float originx, float originy, float dx, float dy, double degrees) {
+        Point p = new Point(x - originx, y - originy);
+        p = rotate(degrees, p.x, p.y);
+        p.x = p.x + originx + dx;
+        p.y = p.y + originy + dy;
+        return p;
+    }
+
     public static Point traRoTra(Point p, float originx, float originy, double degrees) {
         p.x = p.x - originx;
         p.y = p.y - originy;
@@ -24,15 +41,6 @@ public class Utils {
         p.y=p.y+originy;
         return p;
     }
-
-    public static Point traRoTra(float x, float y, float originx, float originy, float dx, float dy, double degrees){
-        Point p=new Point(x-originx,y-originy);
-        p=rotate(degrees,p.x,p.y);
-        p.x=p.x+originx+dx;
-        p.y=p.y+originy-dy;
-        return p;
-    }
-
 
 
     public static Point translate(float x, float y, float dx, float dy){
