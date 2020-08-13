@@ -1,10 +1,81 @@
 package com.plm.valdecilla.utils;
 
 import android.graphics.Point;
+import android.view.View;
 
-// Java program to check if two given line segments intersect
+import com.plm.valdecilla.AppState;
+import com.plm.valdecilla.Ctes;
+import com.plm.valdecilla.model.Node;
+import com.plm.valdecilla.model.Path;
+
+import java.util.Iterator;
+import java.util.List;
+
 public class IntersectionUtils
 {
+    public static Path getIntersectionPath(AppState state, List<Path> paths, View view, com.plm.valdecilla.Point p1, com.plm.valdecilla.Point p2){
+        float tx1,tx2,tx3,tx4;
+        float ty1,ty2,ty3,ty4;
+        Path toFound=null;
+
+        Iterator<Path> it2=state.app.paths.iterator();
+
+        p1=Utils.traRoTra(p1.x,p1.y,view.getWidth()/2,view.getHeight()/2,-AppState.angle);
+        p2=Utils.traRoTra(p2.x,p2.y,view.getWidth()/2,view.getHeight()/2,-AppState.angle);
+        p1=Utils.translate(p1.x,p1.y,-state.dx,state.dy);
+        p2=Utils.translate(p2.x,p2.y,-state.dx,state.dy);
+
+        while(it2.hasNext()){
+            Path path=it2.next();
+
+            tx1=(int)(path.a.x);
+            ty1=(int)(path.a.y);
+
+            tx2=(int)(path.b.x);
+            ty2=(int)(path.b.y);
+
+
+            if(IntersectionUtils.doIntersect(tx1,ty1,tx2,ty2,p1.x,p1.y,p2.x,p2.y)){
+                toFound=path;
+                break;
+            }
+
+        }
+
+        return toFound;
+    }
+
+    public static Node getIntersection(AppState state, List<Node> nodes, View view, com.plm.valdecilla.Point p1, com.plm.valdecilla.Point p2){
+        float tx1,tx2,tx3,tx4;
+        float ty1,ty2,ty3,ty4;
+        Node toFound=null;
+
+        Iterator<Node> it1= state.app.nodes.iterator();
+
+        p1=Utils.traRoTra(p1.x,p1.y,view.getWidth()/2,view.getHeight()/2,-AppState.angle);
+        p2=Utils.traRoTra(p2.x,p2.y,view.getWidth()/2,view.getHeight()/2,-AppState.angle);
+        p1=Utils.translate(p1.x,p1.y,-state.dx,state.dy);
+        p2=Utils.translate(p2.x,p2.y,-state.dx,state.dy);
+
+        int angle=MathUtils.getNormal(p1.x,p1.y,p2.x,p2.y);
+
+        while(it1.hasNext()){
+            Node node=it1.next();
+
+            tx1=(int)(node.x + Ctes.RADIUS*Math.cos(Math.toRadians(angle)));
+            ty1=(int)(node.y - Ctes.RADIUS*Math.sin(Math.toRadians(angle)));
+
+            tx2=(int)(node.x + Ctes.RADIUS*Math.cos(Math.toRadians(angle+180)));
+            ty2=(int)(node.y - Ctes.RADIUS*Math.sin(Math.toRadians(angle+180)));
+
+
+            if(IntersectionUtils.doIntersect(tx1,ty1,tx2,ty2,p1.x,p1.y,p2.x,p2.y)){
+                toFound=node;
+                break;
+            }
+        }
+        return toFound;
+    }
 
     // Given three colinear points p, q, r, the function checks if
 // point q lies on line segment 'pr'

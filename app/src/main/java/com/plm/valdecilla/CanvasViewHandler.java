@@ -98,80 +98,31 @@ public class CanvasViewHandler{
                     changed();
                 }
             }else if(clicked2==null && state.clicked1==null){
-                float tx1,tx2,tx3,tx4;
-                float ty1,ty2,ty3,ty4;
-
-                //ver si cruzamos
-                Node toDelete=null;
-
-                Iterator<Node> it1= state.app.nodes.iterator();
-                boolean intersect1=false;
-
-
-                //Point p1=Utils.traRoTra(state.lastX,state.lastY,view.getWidth()/2,view.getHeight()/2,-AppState.angle);
-                //Point p2=Utils.traRoTra(event.getX(),event.getY(),view.getWidth()/2,view.getHeight()/2,-AppState.angle);
                 Point p1=new Point(state.lastX,state.lastY);
                 Point p2=new Point(event.getX(),event.getY());
 
+                Node nodeToRemove=null;
+                Path pathToRemove=null;
 
-                p1=Utils.traRoTra(p1.x,p1.y,view.getWidth()/2,view.getHeight()/2,-AppState.angle);
-                //p1=Utils.translate(p1.x,p1.y,-state.dx,state.dy);
-                p2=Utils.traRoTra(p2.x,p2.y,view.getWidth()/2,view.getHeight()/2,-AppState.angle);
-                //p2=Utils.translate(p1.x,p1.y,-state.dx,state.dy);
-                p1=Utils.translate(p1.x,p1.y,-state.dx,state.dy);
-                p2=Utils.translate(p2.x,p2.y,-state.dx,state.dy);
-                AppState.ptest1=p1;
-                AppState.ptest2=p2;
+                if(canEdit){
+                    nodeToRemove=IntersectionUtils.getIntersection(state,state.app.nodes,view,p1,p2);
 
-                int angle=MathUtils.getNormal(p1.x,p1.y,p2.x,p2.y);
+                    if(nodeToRemove!=null){
+                        removePaths(state,nodeToRemove);
+                        state.app.nodes.remove(nodeToRemove);
+                    }else{
+                        pathToRemove=IntersectionUtils.getIntersectionPath(state,state.app.paths,view,p1,p2);
 
-
-
-                while(it1.hasNext()){
-                    Node node=it1.next();
-
-                    tx1=(int)(node.x + Ctes.RADIUS*Math.cos(Math.toRadians(angle)));
-                    ty1=(int)(node.y - Ctes.RADIUS*Math.sin(Math.toRadians(angle)));
-
-                    tx2=(int)(node.x + Ctes.RADIUS*Math.cos(Math.toRadians(angle+180)));
-                    ty2=(int)(node.y - Ctes.RADIUS*Math.sin(Math.toRadians(angle+180)));
-
-                    intersect1= IntersectionUtils.doIntersect(tx1,ty1,tx2,ty2,p1.x,p1.y,p2.x,p2.y);
-
-                    if(intersect1 && canEdit){
-                        state.remove(node);
-                        changed();
-                        break;
-                    }
-                }
-
-                Iterator<Path> it2=state.app.paths.iterator();
-                boolean intersect2=false;
-
-                while(it2.hasNext()){
-                    Path path=it2.next();
-
-                    tx1=(int)(path.a.x);
-                    ty1=(int)(path.a.y);
-
-                    tx2=(int)(path.b.x);
-                    ty2=(int)(path.b.y);
-
-                    intersect2= IntersectionUtils.doIntersect(tx1,ty1,tx2,ty2,p1.x,p1.y,p2.x,p2.y);
-
-                    if(intersect2 && canEdit){
-                        state.remove(path);
-                        changed();
-                        break;
+                        if(pathToRemove!=null){
+                            state.app.paths.remove(pathToRemove);
+                        }
                     }
 
+
                 }
 
-                if(!intersect2 && !intersect1) {
-                    state.dx = state.dx - (p2.x-p1.x);
-                    state.dy = state.dy + (p2.y-p1.y);
-                    changed();
-                }
+
+
 
             } else if (state.clicked1 != null && state.clicked1 == clicked2) {
                 state.app.nodes.remove(state.clicked1);
@@ -180,7 +131,19 @@ public class CanvasViewHandler{
 
         }
     }
-    
+
+    private void removePaths(AppState state, Node node) {
+        Iterator <Path>it=state.app.paths.iterator();
+
+        while(it.hasNext()){
+            Path path=it.next();
+
+            if(path.a==node || path.b==node){
+                it.remove();
+            }
+        }
+    }
+
 
     public boolean handleDown(View view,MotionEvent event){
         long currentTime=System.currentTimeMillis();
