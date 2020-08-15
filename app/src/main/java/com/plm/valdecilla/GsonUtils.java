@@ -62,7 +62,7 @@ public class GsonUtils {
                     Path path=new Path();
                     path.a=map.get(one.get("a").getAsString());
                     path.b=map.get(one.get("b").getAsString());
-                    path.color=one.get("color").getAsInt();
+                    //path.colors.add(one.get("color").);
                     app.paths.add(path);
                 }
 
@@ -106,7 +106,7 @@ public class GsonUtils {
                     JsonObject one = new JsonObject();
                     one.addProperty("a", path.a.id);
                     one.addProperty("b", path.b.id);
-                    one.addProperty("color", path.color);
+                    //one.addProperty("color", path.color);
                     array2.add(one);
                 }
 

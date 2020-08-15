@@ -13,6 +13,31 @@ import java.util.List;
 
 public class IntersectionUtils
 {
+    public static Path getIntersectionPath(AppState state, List<Path> paths, View view, com.plm.valdecilla.Point screenPoint) {
+        Path toFound = null;
+        com.plm.valdecilla.Point p = Utils.traRoTra(screenPoint, view.getWidth() / 2, view.getHeight() / 2, AppState.angle);
+        p.x = p.x + state.dx;
+        p.y = p.y - state.dy;
+
+        for (Path path : paths) {
+            double angle = Math.atan2(path.a.y - path.b.y, path.b.x - path.a.x);
+            double normal = angle + Math.PI / 2;
+
+            float tx1 = (int) (p.x + Ctes.RADIUS * Math.cos(normal));
+            float ty1 = (int) (p.y - Ctes.RADIUS * Math.sin(normal));
+            float tx2 = (int) (p.x + Ctes.RADIUS * Math.cos(normal + Math.PI));
+            float ty2 = (int) (p.y - Ctes.RADIUS * Math.sin(normal + Math.PI));
+
+            if (IntersectionUtils.doIntersect(tx1, ty1, tx2, ty2, path.a.x, path.a.y, path.b.x, path.b.y)) {
+                toFound = path;
+                break;
+            }
+
+        }
+
+        return toFound;
+    }
+
 
     public static Path getIntersectionPath(AppState state, List<Path> paths, View view, com.plm.valdecilla.Point p1, com.plm.valdecilla.Point p2){
         float tx1,tx2,tx3,tx4;
@@ -63,11 +88,11 @@ public class IntersectionUtils
         while(it1.hasNext()){
             Node node=it1.next();
 
-            tx1=(int)(node.x + Ctes.RADIUS*Math.cos(Math.toRadians(angle)));
-            ty1=(int)(node.y - Ctes.RADIUS*Math.sin(Math.toRadians(angle)));
+            tx1 = (float) (node.x + Ctes.RADIUS * Math.cos(Math.toRadians(angle)));
+            ty1 = (float) (node.y - Ctes.RADIUS * Math.sin(Math.toRadians(angle)));
 
-            tx2=(int)(node.x + Ctes.RADIUS*Math.cos(Math.toRadians(angle+180)));
-            ty2=(int)(node.y - Ctes.RADIUS*Math.sin(Math.toRadians(angle+180)));
+            tx2 = (float) (node.x + Ctes.RADIUS * Math.cos(Math.toRadians(angle + 180)));
+            ty2 = (float) (node.y - Ctes.RADIUS * Math.sin(Math.toRadians(angle + 180)));
 
 
             if(IntersectionUtils.doIntersect(tx1,ty1,tx2,ty2,p1.x,p1.y,p2.x,p2.y)){

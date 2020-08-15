@@ -33,19 +33,40 @@ public class CanvasViewHandler {
     private void click(View view, MotionEvent event) {
         //click
         Node clicked2 = getClickedNode(view, event.getX(), event.getY());
+        Node newNode = null;
+        Path intersectPath = IntersectionUtils.getIntersectionPath(
+                state, state.app.paths, view, new Point(event.getX(), event.getY())
+        );
 
-        if (clicked2 == null) {
-            //No intersection
+        if (clicked2 == null || intersectPath != null) {
             Point p = Utils.traRoTra(event.getX(), event.getY(), view.getWidth() / 2, view.getHeight() / 2, state.dx, -state.dy, -AppState.angle);
 
             p.x = Math.round((p.x) / Ctes.GRID) * Ctes.GRID;
             p.y = Math.round((p.y) / Ctes.GRID) * Ctes.GRID;
 
             if (canEdit) {
-                Node node = new Node(p.x, p.y);
-                state.app.nodes.add(node);
+                newNode = new Node(p.x, p.y);
+                state.app.nodes.add(newNode);
                 changed();
             }
+        }
+
+        if (intersectPath != null) {
+
+            Node a = intersectPath.a;
+            Node b = intersectPath.b;
+
+            Path pa = new Path();
+            pa.a = a;
+            pa.b = newNode;
+
+            Path pb = new Path();
+            pa.a = newNode;
+            pa.b = b;
+
+            state.app.paths.remove(intersectPath);
+            state.app.paths.add(pa);
+            state.app.paths.add(pb);
         }
     }
 
@@ -87,20 +108,32 @@ public class CanvasViewHandler {
         }
     }
 
-    private void dragNodeInNode(View view, Node clicked2, MotionEvent event) {
-        Path path = state.getPath(state.selectedColor, state.clicked1, clicked2);
+    private void dragNodeInNode(View view, Node clicked1, Node clicked2, MotionEvent event) {
+        Path path = null;
+
+        for (Path one : state.app.paths) {
+            if (one.a == clicked1 && one.b == clicked2) {
+                path = one;
+                break;
+            }
+        }
 
         if (path == null) {
             path = new Path();
-            path.a = state.clicked1;
+            path.a = clicked1;
             path.b = clicked2;
-            path.color = state.selectedColor;
             state.app.paths.add(path);
-            changed();
-        } else {
-            state.app.paths.remove(path);
-            changed();
         }
+
+        if (!path.colors.contains(state.selectedColor)) {
+            path.colors.add(state.selectedColor);
+        }
+
+        if (path.colors.size() > 1 && path.colors.contains(0)) {
+            path.colors.remove(0);
+        }
+
+
     }
 
     private void dragViewInView(View view, MotionEvent event) {
@@ -119,7 +152,11 @@ public class CanvasViewHandler {
             pathToRemove = IntersectionUtils.getIntersectionPath(state, state.app.paths, view, p1, p2);
 
             if (pathToRemove != null) {
-                state.app.paths.remove(pathToRemove);
+                pathToRemove.colors.remove(new Integer(state.selectedColor));
+
+                if (pathToRemove.colors.size() == 0) {
+                    state.app.paths.remove(pathToRemove);
+                }
             }
         }
 
@@ -141,7 +178,7 @@ public class CanvasViewHandler {
         if (state.clicked1 != null && clicked2 == null) {
             dragNodeInView(view, event);
         } else if (state.clicked1 != null && clicked2 != null && canEdit) {
-            dragNodeInNode(view, clicked2, event);
+            dragNodeInNode(view, state.clicked1, clicked2, event);
         } else if (clicked2 == null && state.clicked1 == null && canEdit) {
             dragViewInView(view, event);
         }

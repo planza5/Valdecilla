@@ -34,41 +34,6 @@ public class AppState {
     public int screenWidth;
     public int screenHeight;
 
-    public void remove(Node node) {
-        Iterator<Path> it=app.paths.iterator();
 
-        while(it.hasNext()){
-            Path next=it.next();
 
-            if(next!=null && next.a==node || next.b==node){
-                it.remove();
-            }
-        }
-
-        app.nodes.remove(node);
-    }
-
-    public void remove(Path path) {
-        Iterator<Path> it=app.paths.iterator();
-
-        while(it.hasNext()){
-            Path next=it.next();
-
-            if(next.match(selectedColor,path.a,path.b)){
-                it.remove();
-            }
-        }
-    }
-
-    public Path getPath(int color,Node node1, Node node2){
-        Path path=null;
-
-        for(Path one:app.paths){
-            if(one.match(color,node1,node2)){
-                return one;
-            }
-        }
-
-        return path;
-    }
 }

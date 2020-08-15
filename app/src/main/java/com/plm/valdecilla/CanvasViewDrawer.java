@@ -12,6 +12,7 @@ import com.plm.valdecilla.utils.MathUtils;
 import com.plm.valdecilla.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class CanvasViewDrawer {
     private static final Paint painterText= new TextPaint();
     private static final float STROKE_NODES = 12;
     private static final DashPathEffect dottedEffect=new DashPathEffect(new float[] {10,20}, 0);
-    private static final int INTER_LINES_WIDTH = 20;
+
 
 
     public void drawPruebas(Canvas canvas, AppState state){
@@ -43,6 +44,7 @@ public class CanvasViewDrawer {
             //trasladamos al origen 0,0
             Point p=Utils.traRoTra(node.x-state.dx,node.y+state.dy,canvas.getWidth()/2,canvas.getHeight()/2,AppState.angle);
             //Utils.translate(p,-state.dx,state.dy);
+            //canvas.drawCircle(p.x, p.y, Ctes.RADIUS, painterFillNodes);
             canvas.drawCircle(p.x, p.y, Ctes.RADIUS, painterStrokeNodes);
 
             float width = painterText.measureText(node.name);
@@ -76,99 +78,40 @@ public class CanvasViewDrawer {
 
 
     public void drawPaths(Canvas canvas, AppState state){
-        List<List<Path>> list=new ArrayList<>();
+        for (Path one : state.app.paths) {
+            System.out.println("colors " + one.colors.size());
+            Collections.sort(one.colors);
 
-        for(Path path: state.app.paths){
-            path.visible=true;
-        }
+            Point p1 = new Point(one.a.x - state.dx, one.a.y + state.dy);
+            Point p2 = new Point(one.b.x - state.dx, one.b.y + state.dy);
 
-        for(int i = 0; i< state.app.paths.size(); i++){
-            Path path1=state.app.paths.get(i);
+            p1 = Utils.traRoTra(p1.x, p1.y, canvas.getWidth() / 2, canvas.getHeight() / 2, AppState.angle);
+            p2 = Utils.traRoTra(p2.x, p2.y, canvas.getWidth() / 2, canvas.getHeight() / 2, AppState.angle);
 
-            if(!path1.visible){
-                continue;
-            }
-
-            List<Path> toDraw=new ArrayList<>();
-
-            for(int j=i;j<state.app.paths.size();j++){
-                Path path2=state.app.paths.get(j);
-                if(path2.visible && path2!=path1 && path1.match(path2.a,path2.b)){
-                    toDraw.add(path2);
-                    path2.visible=false;
-                }
-            }
-
-            list.add(toDraw);
-
-            if(path1.visible) {
-                toDraw.add(path1);
-                path1.visible=false;
-            }
-
-        }
+            double normal = Math.atan2(p2.y - p1.y, p2.x - p1.x) + Math.PI / 2;
 
 
-        for(List<Path> pathList:list){
-            //Ordenamos por color cada path
-            pathList.sort(new Comparator<Path>() {
-                @Override
-                public int compare(Path p1, Path p2) {
-                if(p1.color>p2.color){
-                    return -1;
-                }else if(p1.color<p2.color){
-                    return +1;
-                }
+            float delta = one.colors.size() / 2 + (one.colors.size() % 2 == 0 ? -.5f : 0f);
 
-                return 0;
-                }
-            });
+            for (int i = 0; i < one.colors.size(); i++) {
 
-            //propiedades comunes para la lista de paths a tratar
-            Path first=pathList.get(0);
-            int angle= MathUtils.getAngle(first.a,first.b);
-            float distance=MathUtils.getDistance(first.a.x,first.a.y,first.b.x,first.b.y);
-
-
-            float totalwidth=(pathList.size()-1)* INTER_LINES_WIDTH;
-
-            float initx=(float)(first.a.x-totalwidth/2*Math.cos(Math.toRadians(angle+90)));
-            float inity=(float)(first.a.y+totalwidth/2*Math.sin(Math.toRadians(angle+90)));
-
-            float ax,ay,bx,by;
-
-
-            for(int idx=0;idx<pathList.size();idx++) {
-                ax=(float)(initx+idx* INTER_LINES_WIDTH *Math.cos(Math.toRadians(angle+90)));
-                ay=(float)(inity-idx* INTER_LINES_WIDTH *Math.sin(Math.toRadians(angle+90)));
-                bx = (float) (ax + distance * Math.cos(Math.toRadians(angle)));
-                by = (float) (ay - distance * Math.sin(Math.toRadians(angle)));
-
-                int colorIdx=pathList.get(idx).color;
-
-                if(colorIdx==0){
+                if (one.colors.get(i) == 0) {
                     painterStrokePaths.setColor(Color.BLACK);
                     painterStrokePaths.setPathEffect(dottedEffect);
-                    painterStrokePaths.setStrokeWidth(5);
-                }else{
+                } else {
+                    painterStrokePaths.setColor(Ctes.COLORS[one.colors.get(i)]);
                     painterStrokePaths.setPathEffect(null);
-                    painterStrokePaths.setColor(Ctes.COLORS[colorIdx]);
-                    painterStrokePaths.setStrokeWidth(INTER_LINES_WIDTH -5);
                 }
 
 
-
-                //aplicamos angulos
-                Point p1=new Point(ax-state.dx, ay+state.dy);
-                Point p2=new Point(bx-state.dx, by+state.dy);
-                p1=Utils.traRoTra(p1.x,p1.y,canvas.getWidth()/2,canvas.getHeight()/2,AppState.angle);
-                p2=Utils.traRoTra(p2.x,p2.y,canvas.getWidth()/2,canvas.getHeight()/2,AppState.angle);
-                canvas.drawLine(p1.x,
-                        p1.y,
-                        p2.x,
-                        p2.y,
+                canvas.drawLine((float) (p1.x + Math.cos(normal) * (i - delta) * Ctes.PATH_LINES_STROKE_WIDTH),
+                        (float) (p1.y + Math.sin(normal) * (i - delta) * Ctes.PATH_LINES_STROKE_WIDTH),
+                        (float) (p2.x + Math.cos(normal) * (i - delta) * Ctes.PATH_LINES_STROKE_WIDTH),
+                        (float) (p2.y + Math.sin(normal) * (i - delta) * Ctes.PATH_LINES_STROKE_WIDTH),
                         painterStrokePaths);
             }
+
+
         }
     }
 
@@ -209,12 +152,9 @@ public class CanvasViewDrawer {
         painterStrokeShadow.setColor(Color.BLACK);
 
         painterStrokePaths.setStyle(Paint.Style.STROKE);
-        painterStrokePaths.setStrokeWidth(STROKE_NODES);
+        painterStrokePaths.setStrokeWidth(Ctes.PATH_LINES_STROKE_WIDTH);
         painterStrokePaths.setColor(Color.BLACK);
 
-        painterStrokeNodes.setColor(Color.BLACK);
-        painterStrokePaths.setColor(Color.BLACK);
-        painterStrokePaths.setStrokeWidth(1);
         painterStrokeWhite.setColor(Color.WHITE);
         painterFillBk.setColor(Color.rgb(250,250,200));
     }

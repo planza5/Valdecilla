@@ -75,7 +75,7 @@ public class SubCanvasViewDrawer {
             painterStrokeNodes.setStrokeWidth(zoom*10);
 
             for(Path path:state.app.paths){
-                if(path.color==0){
+                if (path.colors.get(0) == 0) {
                     painterStrokeNodes.setPathEffect(new DashPathEffect(new float[] {10,20}, 0));
                 }else{
                     painterStrokeNodes.setPathEffect(null);
