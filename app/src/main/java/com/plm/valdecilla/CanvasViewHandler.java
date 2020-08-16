@@ -59,10 +59,12 @@ public class CanvasViewHandler {
             Path pa = new Path();
             pa.a = a;
             pa.b = newNode;
+            intersectPath.cloneColors(pa);
 
             Path pb = new Path();
-            pa.a = newNode;
-            pa.b = b;
+            pb.a = newNode;
+            pb.b = b;
+            intersectPath.cloneColors(pb);
 
             state.app.paths.remove(intersectPath);
             state.app.paths.add(pa);

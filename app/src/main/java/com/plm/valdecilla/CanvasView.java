@@ -90,21 +90,12 @@ public class CanvasView extends View implements View.OnTouchListener, SubCanvasL
     public void setHandler(CanvasViewHandler handler) { this.handler=handler; }
 
     @Override
-    public void touchSubcanvas(float zoom, float x, float y, float width, float height,float minX, float minY, float maxX, float maxY) {
-        width = Math.abs(maxX - minX);
-        height = Math.abs(maxY - minY);
+    public void touchSubcanvas(float zoom, float subx, float suby, float subwidth, float subheight) {
 
-        x = x - width / 2;
-        y = y - height / 2;
-
-        x = x / zoom;
-        y = y / zoom;
-
-        x = x + getWidth() / 2;
-        y = y + getHeight() / 2;
-
-        state.dx = x;
-        state.dy = y;
+        float x=getWidth()/2*subx/subwidth/2;
+        float y=getHeight()/2*suby/subheight/2;
+        state.dx=x;
+        state.dy=y;
         invalidate();
     }
 }

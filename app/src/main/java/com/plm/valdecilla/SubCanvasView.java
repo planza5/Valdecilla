@@ -47,7 +47,7 @@ public class SubCanvasView extends View implements View.OnTouchListener{
 
         if(action==MotionEvent.ACTION_UP || action==MotionEvent.ACTION_MOVE){
             if(listener!=null){
-                listener.touchSubcanvas(drawer.getZoom(),event.getX(),event.getY(),drawer.getWidth(),drawer.getHeight(),drawer.getMinX(),drawer.getMinY(),drawer.getMaxX(),drawer.getMaxY());
+                listener.touchSubcanvas(drawer.getZoom(),event.getX(),event.getY(),drawer.getWidth(),drawer.getHeight());
             }
         }
 

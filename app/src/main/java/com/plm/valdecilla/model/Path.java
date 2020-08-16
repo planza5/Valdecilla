@@ -9,4 +9,9 @@ public class Path {
     public List<Integer> colors = new ArrayList();
     public boolean visible=true;
 
+    public void cloneColors(Path pa) {
+        for(Integer color:colors){
+            pa.colors.add(color);
+        }
+    }
 }

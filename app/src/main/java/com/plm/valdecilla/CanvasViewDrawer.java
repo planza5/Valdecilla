@@ -44,7 +44,7 @@ public class CanvasViewDrawer {
             //trasladamos al origen 0,0
             Point p=Utils.traRoTra(node.x-state.dx,node.y+state.dy,canvas.getWidth()/2,canvas.getHeight()/2,AppState.angle);
             //Utils.translate(p,-state.dx,state.dy);
-            //canvas.drawCircle(p.x, p.y, Ctes.RADIUS, painterFillNodes);
+            canvas.drawCircle(p.x, p.y, Ctes.RADIUS, painterFillNodes);
             canvas.drawCircle(p.x, p.y, Ctes.RADIUS, painterStrokeNodes);
 
             float width = painterText.measureText(node.name);
@@ -79,7 +79,6 @@ public class CanvasViewDrawer {
 
     public void drawPaths(Canvas canvas, AppState state){
         for (Path one : state.app.paths) {
-            System.out.println("colors " + one.colors.size());
             Collections.sort(one.colors);
 
             Point p1 = new Point(one.a.x - state.dx, one.a.y + state.dy);
