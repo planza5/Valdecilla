@@ -46,6 +46,7 @@ public class GsonUtils {
 
                     Node node = new Node();
                     node.id=id;
+                    node.piso = one.get("piso").getAsString();
                     node.name=one.get("name").getAsString();
                     node.subnames=one.get("subnames").getAsString();
                     node.x=one.get("x").getAsFloat();
@@ -96,6 +97,7 @@ public class GsonUtils {
                 for (Node node : app.nodes) {
                     map.put(node.id, node);
                     JsonObject one = new JsonObject();
+                    one.addProperty("piso", node.piso);
                     one.addProperty("x", node.x);
                     one.addProperty("y", node.y);
                     one.addProperty("name", node.name);

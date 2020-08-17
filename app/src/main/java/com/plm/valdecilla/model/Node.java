@@ -11,6 +11,7 @@ public class Node {
     public boolean selected;
     public boolean visible=true;
     public String name="New";
+    public String piso = "";
     public String subnames="";
     public float sx;
     public float sy;

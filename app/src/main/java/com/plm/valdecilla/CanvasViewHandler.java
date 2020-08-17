@@ -19,6 +19,8 @@ import com.plm.valdecilla.utils.IntersectionUtils;
 import com.plm.valdecilla.utils.MathUtils;
 import com.plm.valdecilla.utils.Utils;
 
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 
 
@@ -128,6 +130,7 @@ public class CanvasViewHandler {
             state.app.paths.add(path);
         }
 
+
         if (!path.colors.contains(state.selectedColor)) {
             path.colors.add(state.selectedColor);
         }
@@ -135,6 +138,13 @@ public class CanvasViewHandler {
         if (path.colors.size() > 1 && path.colors.contains(0)) {
             path.colors.remove(0);
         }
+
+        path.colors.sort(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer i1, Integer i2) {
+                return i1.compareTo(i2);
+            }
+        });
 
 
     }
@@ -155,7 +165,7 @@ public class CanvasViewHandler {
             pathToRemove = IntersectionUtils.getIntersectionPath(state, state.app.paths, view, p1, p2);
 
             if (pathToRemove != null) {
-                pathToRemove.colors.remove(new Integer(state.selectedColor));
+                boolean f = pathToRemove.colors.remove(new Integer(state.selectedColor));
 
                 if (pathToRemove.colors.size() == 0) {
                     state.app.paths.remove(pathToRemove);
@@ -259,6 +269,9 @@ public class CanvasViewHandler {
         final ViewGroup viewGroup = view.findViewById(android.R.id.content);
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         final View dialog=view.inflate(context,R.layout.node_dialog,viewGroup);
+        final EditText textPiso = (EditText) dialog.findViewById(R.id.nodeDialogEditTextPiso);
+        textPiso.setText(node.piso == null ? "" : node.piso);
+
 
         final EditText textName = (EditText)dialog.findViewById(R.id.nodeDialogEditTextNodeName);
         textName.setText(state.clicked1.name);
@@ -291,6 +304,11 @@ public class CanvasViewHandler {
         buttonOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (textPiso.getText().toString().length() > 0) {
+                    node.piso = textPiso.getText().toString();
+                }
+
+
                 node.name=textName.getText().toString();
                 node.subnames=textSubName.getText().toString();
                 ad.dismiss();

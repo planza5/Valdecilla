@@ -10,8 +10,19 @@
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp">
 
-    <TextView
-        android:text="Nodo"
+        <TextView
+            android:text="Piso"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:selectAllOnFocus="true"
+            android:id="@+id/nodeDialogEditTextPiso"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="Sala"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
@@ -22,7 +33,7 @@
         android:layout_height="wrap_content"/>
 
     <TextView
-        android:text="SubNodos"
+        android:text="Especialidades"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
@@ -39,7 +50,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="horizontal">
-    <Button
+
+        <Button
         android:id="@+id/nodeDialogOk"
         android:text="OK"
         android:layout_width="wrap_content"
