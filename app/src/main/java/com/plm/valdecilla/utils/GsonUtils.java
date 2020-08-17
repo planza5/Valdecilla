@@ -1,4 +1,4 @@
-package com.plm.valdecilla;
+package com.plm.valdecilla.utils;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -62,7 +62,13 @@ public class GsonUtils {
                     Path path=new Path();
                     path.a=map.get(one.get("a").getAsString());
                     path.b=map.get(one.get("b").getAsString());
-                    //path.colors.add(one.get("color").);
+
+                    JsonArray array=one.getAsJsonArray("colors");
+
+                    for(JsonElement other:array){
+                        path.colors.add(other.getAsInt());
+                    }
+
                     app.paths.add(path);
                 }
 
@@ -106,6 +112,14 @@ public class GsonUtils {
                     JsonObject one = new JsonObject();
                     one.addProperty("a", path.a.id);
                     one.addProperty("b", path.b.id);
+
+                    JsonArray colors=new JsonArray();
+
+                    for(Integer color:path.colors){
+                        colors.add(color);
+                    }
+
+                    one.add("colors",colors);
                     //one.addProperty("color", path.color);
                     array2.add(one);
                 }

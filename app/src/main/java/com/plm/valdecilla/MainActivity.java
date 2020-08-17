@@ -7,7 +7,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -21,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.ToggleButton;
 
 import com.plm.valdecilla.model.App;
+import com.plm.valdecilla.utils.GsonUtils;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity{
                 e.printStackTrace();
             }
 
-            App app=GsonUtils.fromJson(sb.toString());
+            App app= GsonUtils.fromJson(sb.toString());
             state.app.paths=app.paths;
             state.app.nodes=app.nodes;
             canvasView.invalidate();

@@ -14,6 +14,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.plm.valdecilla.model.Node;
 import com.plm.valdecilla.model.Path;
+import com.plm.valdecilla.utils.GsonUtils;
 import com.plm.valdecilla.utils.IntersectionUtils;
 import com.plm.valdecilla.utils.MathUtils;
 import com.plm.valdecilla.utils.Utils;
@@ -300,7 +301,7 @@ public class CanvasViewHandler {
     }
 
     public void changed(){
-        String json=GsonUtils.toJson(state.app);
+        String json= GsonUtils.toJson(state.app);
 
         if(AppState.history.size()==Ctes.MAX_STACK_SIZE){
             AppState.history.remove(0);
