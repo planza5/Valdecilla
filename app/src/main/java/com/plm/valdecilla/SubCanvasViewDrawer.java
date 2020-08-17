@@ -101,7 +101,7 @@ public class SubCanvasViewDrawer {
 
         }
 
-        public float getZoom(){
+    public float getZoom() {
             return zoom;
         }
 

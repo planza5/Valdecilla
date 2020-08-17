@@ -26,7 +26,6 @@ public class CanvasView extends View implements View.OnTouchListener, SubCanvasL
         super(context,attrs);
         this.context=context;
         setOnTouchListener(this);
-
     }
 
 
@@ -90,13 +89,67 @@ public class CanvasView extends View implements View.OnTouchListener, SubCanvasL
     public void setHandler(CanvasViewHandler handler) { this.handler=handler; }
 
     @Override
-    public void touchSubcanvas(float zoom, float subx, float suby, float subwidth, float subheight) {
+    public void touchSubcanvas(float subx, float suby, float thezoom) {
+        float sc_minX = Float.MAX_VALUE;
+        float sc_maxX = Float.MIN_VALUE;
+        float sc_minY = Float.MAX_VALUE;
+        float sc_maxY = Float.MIN_VALUE;
 
-        float x=getWidth()/2*subx/subwidth/2;
-        float y=getHeight()/2*suby/subheight/2;
-        state.dx=x;
-        state.dy=y;
+        for (Node one : state.app.nodes) {
+            if (one.sx < sc_minX) {
+                sc_minX = one.sx;
+            }
+            if (one.sx > sc_maxX) {
+                sc_maxX = one.sx;
+            }
+            if (one.sy < sc_minY) {
+                sc_minY = one.sy;
+            }
+            if (one.sy > sc_maxY) {
+                sc_maxY = one.sy;
+            }
+        }
+
+
+        float c_minX = Float.MAX_VALUE;
+        float c_maxX = Float.MIN_VALUE;
+        float c_minY = Float.MAX_VALUE;
+        float c_maxY = Float.MIN_VALUE;
+
+        for (Node one : state.app.nodes) {
+            if (one.x < c_minX) {
+                c_minX = one.x;
+            }
+            if (one.x > c_maxX) {
+                c_maxX = one.x;
+            }
+            if (one.y < c_minY) {
+                c_minY = one.y;
+            }
+            if (one.y > c_maxY) {
+                c_maxY = one.y;
+            }
+        }
+
+        float subcanvas_width = Math.abs(sc_maxX - sc_minX);
+        float subcanvas_height = Math.abs(sc_maxY - sc_minY);
+        float canvas_width = Math.abs(c_maxX - c_minX);
+        float canvas_height = Math.abs(c_maxY - c_minY);
+
+
+        float xtpc = subcanvas_width == 0 ? 0 : (subx - sc_minX) * 100 / subcanvas_width;
+        float ytpc = subcanvas_height == 0 ? 0 : (suby - sc_minY) * 100 / subcanvas_height;
+
+        float xreal = xtpc * canvas_width / 100;
+        float yreal = ytpc * canvas_height / 100;
+
+        state.dx = xreal + c_minX - canvasWidth / 2;
+        state.dy = -yreal - c_minY + canvasHeight / 2;
+
+
+
         invalidate();
+        subCanvasView.invalidate();
     }
 }
 
