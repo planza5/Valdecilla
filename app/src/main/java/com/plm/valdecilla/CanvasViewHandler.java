@@ -117,7 +117,7 @@ public class CanvasViewHandler {
         Path path = null;
 
         for (Path one : state.app.paths) {
-            if (one.a == clicked1 && one.b == clicked2) {
+            if ((one.a == clicked1 && one.b == clicked2) || (one.a == clicked2 && one.b == clicked1)) {
                 path = one;
                 break;
             }
