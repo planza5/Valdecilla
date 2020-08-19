@@ -39,8 +39,9 @@ public class CanvasViewHandler {
         Node newNode = null;
 
         Path intersectPath = IntersectionUtils.getIntersectionPath(
-                appContext, appContext.app.paths, view, new Point(event.getX(), event.getY())
+                appContext, view, new Point(event.getX(), event.getY())
         );
+
 
         if (clicked2 == null || intersectPath != null) {
             Point p = Utils.traRoTra(event.getX(), event.getY(), view.getWidth() / 2, view.getHeight() / 2, appContext.dx, -appContext.dy, -appContext.angle);
@@ -154,13 +155,13 @@ public class CanvasViewHandler {
         Node nodeToRemove = null;
         Path pathToRemove = null;
 
-        nodeToRemove = IntersectionUtils.getIntersection(appContext, appContext.app.nodes, view, p1, p2);
+        nodeToRemove = IntersectionUtils.getIntersection(appContext, view, p1, p2);
 
         if (nodeToRemove != null) {
             removePaths(appContext, nodeToRemove);
             appContext.app.nodes.remove(nodeToRemove);
         } else {
-            pathToRemove = IntersectionUtils.getIntersectionPath(appContext, appContext.app.paths, view, p1, p2);
+            pathToRemove = IntersectionUtils.getIntersectionPath(appContext, view, p1, p2);
 
             if (pathToRemove != null) {
                 boolean f = pathToRemove.colors.remove(new Integer(appContext.selectedColor));

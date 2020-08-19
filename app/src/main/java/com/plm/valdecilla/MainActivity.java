@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        appContext.shadow.visible = false;
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -267,12 +268,27 @@ public class MainActivity extends AppCompatActivity{
         }
     };
 
-    public void clickTest(View view) {
+    public void clickTest1(View view) {
         appContext.p1 = null;
         appContext.p2 = null;
         appContext.p3 = null;
         appContext.p4 = null;
         appContext.p5 = null;
+        appContext.dx = 0;
+        appContext.dy = 0;
+        appContext.angle = 0;
+        canvasView.invalidate();
+        subCanvasView.invalidate();
+    }
+
+    public void clickTest2(View view) {
+        appContext.p1 = null;
+        appContext.p2 = null;
+        appContext.p3 = null;
+        appContext.p4 = null;
+        appContext.p5 = null;
+        appContext.app.paths.clear();
+        appContext.app.nodes.clear();
         appContext.dx = 0;
         appContext.dy = 0;
         appContext.angle = 0;

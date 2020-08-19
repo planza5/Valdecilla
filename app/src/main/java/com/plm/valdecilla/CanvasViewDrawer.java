@@ -53,6 +53,12 @@ public class CanvasViewDrawer {
 
 
         if (context.p1 != null && context.p2 != null && context.p3 != null) {
+            context.p1 = Utils.traRoTra(context.p1.x - context.dx, context.p1.y + context.dy, canvas.getWidth() / 2, canvas.getHeight() / 2, context.angle);
+            context.p2 = Utils.traRoTra(context.p2.x - context.dx, context.p2.y + context.dy, canvas.getWidth() / 2, canvas.getHeight() / 2, context.angle);
+            context.p3 = Utils.traRoTra(context.p3.x - context.dx, context.p3.y + context.dy, canvas.getWidth() / 2, canvas.getHeight() / 2, context.angle);
+            context.p4 = Utils.traRoTra(context.p4.x - context.dx, context.p4.y + context.dy, canvas.getWidth() / 2, canvas.getHeight() / 2, context.angle);
+            context.p5 = Utils.traRoTra(context.p5.x - context.dx, context.p5.y + context.dy, canvas.getWidth() / 2, canvas.getHeight() / 2, context.angle);
+
             canvas.drawCircle(context.p1.x, context.p1.y, 10, painterFillBk);
             canvas.drawCircle(context.p2.x, context.p2.y, 20, painterStrokeNodes);
             canvas.drawCircle(context.p3.x, context.p3.y, 20, painterStrokeNodes);

@@ -59,9 +59,19 @@
                 <Button
                     android:layout_marginHorizontal="5dp"
                     android:background="@drawable/custom_border"
-                    android:id="@+id/test"
-                    android:onClick="clickTest"
-                    android:text="Test"
+                    android:id="@+id/test1"
+                    android:onClick="clickTest1"
+                    android:text="1"
+                    android:textSize="10dp"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp" />
+
+                <Button
+                    android:layout_marginHorizontal="5dp"
+                    android:background="@drawable/custom_border"
+                    android:id="@+id/test2"
+                    android:onClick="clickTest2"
+                    android:text="2"
                     android:textSize="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="30dp" />

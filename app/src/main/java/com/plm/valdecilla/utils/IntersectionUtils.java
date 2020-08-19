@@ -1,5 +1,6 @@
 package com.plm.valdecilla.utils;
 
+import android.view.MotionEvent;
 import android.view.View;
 
 
@@ -14,20 +15,16 @@ import java.util.List;
 
 public class IntersectionUtils
 {
-    public static Path getIntersectionPath(AppContext ctx, List<Path> paths, View view, com.plm.valdecilla.Point screenPoint) {
+    public static Path getIntersectionPath(AppContext context, View view, Point point) {
         Path toFound = null;
-        //Point clicked = Utils.traRoTra(screenPoint.x, screenPoint.y, view.getWidth() / 2, view.getHeight() / 2, ctx.dx, -ctx.dy, -ctx.angle);
-        Point clicked = Utils.translate(screenPoint.x, screenPoint.y, -ctx.dx, +ctx.dy);
+        Point clicked = Utils.traRoTra(point.x, point.y, view.getWidth() / 2, view.getHeight() / 2, context.dx, -context.dy, -context.angle);
 
-        for (Path path : paths) {
-            Point p1 = Utils.traRoTra(new Point(path.a.x, path.a.y), view.getWidth() / 2, view.getHeight() / 2, -ctx.dx, ctx.dy, ctx.angle);
-            Point p2 = Utils.traRoTra(new Point(path.b.x, path.b.y), view.getWidth() / 2, view.getHeight() / 2, -ctx.dx, ctx.dy, ctx.angle);
+        for (Path path : context.app.paths) {
+            Point p1 = new Point(path.a.x, path.a.y);
+            Point p2 = new Point(path.b.x, path.b.y);
 
             double angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
 
-            ctx.p1 = clicked;
-            ctx.p2 = p1;
-            ctx.p3 = p2;
 
             double normal = angle + Math.PI / 2;
             float tx1 = (int) (clicked.x + Ctes.RADIUS * Math.cos(normal));
@@ -35,8 +32,6 @@ public class IntersectionUtils
             float tx2 = (int) (clicked.x + Ctes.RADIUS * Math.cos(normal - Math.PI));
             float ty2 = (int) (clicked.y + Ctes.RADIUS * Math.sin(normal - Math.PI));
 
-            ctx.p4 = new Point(tx1, ty1);
-            ctx.p5 = new Point(tx2, ty2);
             if (IntersectionUtils.doIntersect(tx1, ty1, tx2, ty2, p1.x, p1.y, p2.x, p2.y)) {
                 toFound = path;
                 break;
@@ -48,17 +43,17 @@ public class IntersectionUtils
     }
 
 
-    public static Path getIntersectionPath(AppContext ctx, List<Path> paths, View view, com.plm.valdecilla.Point p1, com.plm.valdecilla.Point p2) {
+    public static Path getIntersectionPath(AppContext context, View view, com.plm.valdecilla.Point p1, com.plm.valdecilla.Point p2) {
         float tx1,tx2,tx3,tx4;
         float ty1,ty2,ty3,ty4;
         Path toFound=null;
 
-        Iterator<Path> it2 = ctx.app.paths.iterator();
+        Iterator<Path> it2 = context.app.paths.iterator();
 
-        p1 = Utils.traRoTra(p1.x, p1.y, view.getWidth() / 2, view.getHeight() / 2, -ctx.angle);
-        p2 = Utils.traRoTra(p2.x, p2.y, view.getWidth() / 2, view.getHeight() / 2, -ctx.angle);
-        p1 = Utils.translate(p1.x, p1.y, -ctx.dx, ctx.dy);
-        p2 = Utils.translate(p2.x, p2.y, -ctx.dx, ctx.dy);
+        p1 = Utils.traRoTra(p1.x, p1.y, view.getWidth() / 2, view.getHeight() / 2, -context.angle);
+        p2 = Utils.traRoTra(p2.x, p2.y, view.getWidth() / 2, view.getHeight() / 2, -context.angle);
+        p1 = Utils.translate(p1.x, p1.y, -context.dx, context.dy);
+        p2 = Utils.translate(p2.x, p2.y, -context.dx, context.dy);
 
         while(it2.hasNext()){
             Path path=it2.next();
@@ -80,7 +75,7 @@ public class IntersectionUtils
         return toFound;
     }
 
-    public static Node getIntersection(AppContext context, List<Node> nodes, View view, com.plm.valdecilla.Point p1, com.plm.valdecilla.Point p2) {
+    public static Node getIntersection(AppContext context, View view, com.plm.valdecilla.Point p1, com.plm.valdecilla.Point p2) {
         float tx1,tx2,tx3,tx4;
         float ty1,ty2,ty3,ty4;
         Node toFound=null;
