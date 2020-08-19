@@ -63,6 +63,9 @@ public class GsonUtils {
                     Path path=new Path();
                     path.a=map.get(one.get("a").getAsString());
                     path.b=map.get(one.get("b").getAsString());
+                    path.verb_ab = one.get("verb_ab").getAsString();
+                    path.verb_ba = one.get("verb_ba").getAsString();
+                    path.name = one.get("path_name").getAsString();
 
                     JsonArray array=one.getAsJsonArray("colors");
 
@@ -114,7 +117,9 @@ public class GsonUtils {
                     JsonObject one = new JsonObject();
                     one.addProperty("a", path.a.id);
                     one.addProperty("b", path.b.id);
-
+                    one.addProperty("path_name", path.name);
+                    one.addProperty("verb_ab", path.verb_ab);
+                    one.addProperty("verb_ba", path.verb_ba);
                     JsonArray colors=new JsonArray();
 
                     for(Integer color:path.colors){

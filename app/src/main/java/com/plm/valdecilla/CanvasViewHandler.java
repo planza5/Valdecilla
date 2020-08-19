@@ -1,7 +1,6 @@
 package com.plm.valdecilla;
 
 
-import android.content.Context;
 import android.text.InputType;
 import android.text.method.ScrollingMovementMethod;
 import android.view.MotionEvent;
@@ -33,32 +32,81 @@ public class CanvasViewHandler {
         changed();
     }
 
-    private void addNode(View view, float x, float y) {
+    private Node addNode(View view, float x, float y) {
+        Node newNode = null;
         Point p = Utils.traRoTra(x, y, view.getWidth() / 2, view.getHeight() / 2, appContext.dx, -appContext.dy, -appContext.angle);
 
         if (canEdit) {
             p.x = Math.round((p.x) / Ctes.GRID) * Ctes.GRID;
             p.y = Math.round((p.y) / Ctes.GRID) * Ctes.GRID;
-            Node newNode = new Node(p.x, p.y);
+            newNode = new Node(p.x, p.y);
             appContext.app.nodes.add(newNode);
-            changed();
         }
+
+        return newNode;
     }
 
-    public void click(View view, MotionEvent event) {
+    public void doubleClick(View view, MotionEvent event) {
         //click
-        Node clicked2 = getClickedNode(view, event.getX(), event.getY());
-        Node newNode = null;
+        Node clickedNode = getClickedNode(view, event.getX(), event.getY());
 
-        if (clicked2 == null) {
-            addNode(view, event.getX(), event.getY());
+        if (clickedNode != null) {
+            showNodeDialog(clickedNode, view);
         }
 
+        Path clickedPath = IntersectionUtils.getIntersectionPath(appContext, view, new Point(event.getX(), event.getY()));
+
+        if (clickedPath != null) {
+            showPathDialog(clickedPath, view);
+        }
+
+    }
+
+    private void showPathDialog(final Path path, View view) {
+        if (path == null) {
+            return;
+        }
+
+        final ViewGroup viewGroup = view.findViewById(android.R.id.content);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+        final View dialog = view.inflate(view.getContext(), R.layout.path_dialog, viewGroup);
+
+        final EditText textName = (EditText) dialog.findViewById(R.id.path_name);
+        textName.setText(path.name == null ? "" : path.name);
+
+        final EditText textVerAtoB = (EditText) dialog.findViewById(R.id.path_verb_ab);
+        textVerAtoB.setText(path.verb_ab == null ? "" : path.verb_ab);
+
+        final EditText textVerBtoA = (EditText) dialog.findViewById(R.id.path_verb_ba);
+        textVerBtoA.setText(path.verb_ba == null ? "" : path.verb_ba);
+
+        final Button buttonOk = (Button) dialog.findViewById(R.id.pathDialogOk);
+        final Button buttonCancel = (Button) dialog.findViewById(R.id.pathDialogCancel);
+
+        builder.setView(dialog);
+        final AlertDialog ad = builder.show();
+
+
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ad.dismiss();
+            }
+        });
+
+        buttonOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                path.name = textName.getText().toString();
+                path.verb_ab = textVerAtoB.getText().toString();
+                path.verb_ba = textVerBtoA.getText().toString();
+                ad.dismiss();
+                changed();
+            }
+        });
     }
 
     public void handleUp(View view,MotionEvent event){
-
-
         appContext.shadow.visible = false;
 
         int distance = MathUtils.getDistance(appContext.lastX, appContext.lastY, event.getX(), event.getY());
@@ -73,8 +121,8 @@ public class CanvasViewHandler {
 
 
         p = Utils.traRoTra(p.x, p.y, view.getWidth() / 2, view.getHeight() / 2, appContext.dx, -appContext.dy, -appContext.angle);
-        /*p.x = Math.round((p.x) / Ctes.GRID) * Ctes.GRID;
-        p.y = Math.round((p.y) / Ctes.GRID) * Ctes.GRID;*/
+        p.x = Math.round((p.x) / Ctes.GRID) * Ctes.GRID;
+        p.y = Math.round((p.y) / Ctes.GRID) * Ctes.GRID;
 
         boolean existsNode = false;
 
@@ -229,17 +277,14 @@ public class CanvasViewHandler {
     }
 
 
-
-    public void buildAlert(Context context, View view) {
-        final Node node = appContext.clicked1;
-
+    public void showNodeDialog(final Node node, View view) {
         if(node==null){
             return;
         }
 
         final ViewGroup viewGroup = view.findViewById(android.R.id.content);
         final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-        final View dialog=view.inflate(context,R.layout.node_dialog,viewGroup);
+        final View dialog = view.inflate(view.getContext(), R.layout.node_dialog, viewGroup);
         final EditText textPiso = (EditText) dialog.findViewById(R.id.nodeDialogEditTextPiso);
         textPiso.setText(node.piso == null ? "" : node.piso);
 
@@ -307,42 +352,41 @@ public class CanvasViewHandler {
         appContext.historyIndex = appContext.history.size() - 1;
     }
 
-    public void doubleClick(CanvasView view, MotionEvent event) {
+    public void click(CanvasView view, MotionEvent event) {
         if (!canEdit) {
             return;
         }
 
-        Node clicked2 = getClickedNode(view, event.getX(), event.getY());
-        Node newNode = null;
+        Node newnode = getClickedNode(view, event.getX(), event.getY());
 
-        Path intersectPath = IntersectionUtils.getIntersectionPath(
-                appContext, view, new Point(event.getX(), event.getY())
-        );
+        if (newnode == null) {
+            newnode = addNode(view, event.getX(), event.getY());
+        } else {
+            return;
+        }
 
+        Path intersectPath = IntersectionUtils.getIntersectionPath(appContext, view, new Point(event.getX(), event.getY()));
 
         if (intersectPath != null) {
-            Point p = Utils.traRoTra(event.getX(), event.getY(), view.getWidth() / 2, view.getHeight() / 2, appContext.dx, -appContext.dy, -appContext.angle);
-            addNode(view, event.getX(), event.getY());
             Node a = intersectPath.a;
             Node b = intersectPath.b;
 
             Path pa = new Path();
             pa.a = a;
-            pa.b = newNode;
+            pa.b = newnode;
             intersectPath.cloneColors(pa);
 
             Path pb = new Path();
-            pb.a = newNode;
+            pb.a = newnode;
             pb.b = b;
             intersectPath.cloneColors(pb);
 
             appContext.app.paths.remove(intersectPath);
             appContext.app.paths.add(pa);
             appContext.app.paths.add(pb);
-
-            changed();
         }
 
+        changed();
 
     }
 

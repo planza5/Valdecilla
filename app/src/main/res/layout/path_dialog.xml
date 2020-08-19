@@ -13,13 +13,24 @@
         android:layout_marginRight="50dp">
 
         <TextView
+            android:text="Nombre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:selectAllOnFocus="true"
+            android:id="@+id/path_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
             android:text="Verbo cuando vas de A a B"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <EditText
             android:selectAllOnFocus="true"
-            android:id="@+id/verb_AtoB"
+            android:id="@+id/path_verb_ab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -30,19 +41,10 @@
 
         <EditText
             android:selectAllOnFocus="true"
-            android:id="@+id/verb_BtoA"
+            android:id="@+id/path_verb_ba"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <TextView
-            android:text="Especialidades"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <EditText
-            android:id="@+id/nodeDialogEditTextSubNodeName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
     </LinearLayout>
 
     <LinearLayout
@@ -54,13 +56,13 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/nodePathOk"
+            android:id="@+id/pathDialogOk"
             android:text="OK"
             android:layout_width="wrap_content"
             android:layout_height="40dp" />
 
         <Button
-            android:id="@+id/nodePathCancel"
+            android:id="@+id/pathDialogCancel"
             android:text="Cancel"
             android:layout_width="wrap_content"
             android:layout_height="40dp" />
