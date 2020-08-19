@@ -33,47 +33,27 @@ public class CanvasViewHandler {
         changed();
     }
 
+    private void addNode(View view, float x, float y) {
+        Point p = Utils.traRoTra(x, y, view.getWidth() / 2, view.getHeight() / 2, appContext.dx, -appContext.dy, -appContext.angle);
+
+        if (canEdit) {
+            p.x = Math.round((p.x) / Ctes.GRID) * Ctes.GRID;
+            p.y = Math.round((p.y) / Ctes.GRID) * Ctes.GRID;
+            Node newNode = new Node(p.x, p.y);
+            appContext.app.nodes.add(newNode);
+            changed();
+        }
+    }
+
     public void click(View view, MotionEvent event) {
         //click
         Node clicked2 = getClickedNode(view, event.getX(), event.getY());
         Node newNode = null;
 
-        Path intersectPath = IntersectionUtils.getIntersectionPath(
-                appContext, view, new Point(event.getX(), event.getY())
-        );
-
-
-        if (clicked2 == null || intersectPath != null) {
-            Point p = Utils.traRoTra(event.getX(), event.getY(), view.getWidth() / 2, view.getHeight() / 2, appContext.dx, -appContext.dy, -appContext.angle);
-
-            /*p.x = Math.round((p.x) / Ctes.GRID) * Ctes.GRID;
-            p.y = Math.round((p.y) / Ctes.GRID) * Ctes.GRID;*/
-
-            if (canEdit) {
-                newNode = new Node(p.x, p.y);
-                appContext.app.nodes.add(newNode);
-                changed();
-            }
+        if (clicked2 == null) {
+            addNode(view, event.getX(), event.getY());
         }
 
-        if (intersectPath != null) {
-            Node a = intersectPath.a;
-            Node b = intersectPath.b;
-
-            Path pa = new Path();
-            pa.a = a;
-            pa.b = newNode;
-            intersectPath.cloneColors(pa);
-
-            Path pb = new Path();
-            pb.a = newNode;
-            pb.b = b;
-            intersectPath.cloneColors(pb);
-
-            appContext.app.paths.remove(intersectPath);
-            appContext.app.paths.add(pa);
-            appContext.app.paths.add(pb);
-        }
     }
 
     public void handleUp(View view,MotionEvent event){
@@ -83,7 +63,7 @@ public class CanvasViewHandler {
 
         int distance = MathUtils.getDistance(appContext.lastX, appContext.lastY, event.getX(), event.getY());
 
-        if (distance > 50) {
+        if (distance > Ctes.RADIUS * 2) {
             drag(view, event);
         }
     }
@@ -210,16 +190,11 @@ public class CanvasViewHandler {
 
 
     public boolean handleDown(View view,MotionEvent event){
-        long currentTime=System.currentTimeMillis();
-        boolean doubleclick = currentTime - appContext.lastTime < 250;
-
-
-        appContext.lastTime = currentTime;
         appContext.lastX = event.getX();
         appContext.lastY = event.getY();
         appContext.clicked1 = getClickedNode(view, appContext.lastX, appContext.lastY);
 
-        return doubleclick;
+        return true;
     }
 
 
@@ -263,7 +238,7 @@ public class CanvasViewHandler {
         }
 
         final ViewGroup viewGroup = view.findViewById(android.R.id.content);
-        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
         final View dialog=view.inflate(context,R.layout.node_dialog,viewGroup);
         final EditText textPiso = (EditText) dialog.findViewById(R.id.nodeDialogEditTextPiso);
         textPiso.setText(node.piso == null ? "" : node.piso);
@@ -308,6 +283,7 @@ public class CanvasViewHandler {
                 node.name=textName.getText().toString();
                 node.subnames=textSubName.getText().toString();
                 ad.dismiss();
+                changed();
             }
         });
 
@@ -330,5 +306,45 @@ public class CanvasViewHandler {
         appContext.history.push(json);
         appContext.historyIndex = appContext.history.size() - 1;
     }
+
+    public void doubleClick(CanvasView view, MotionEvent event) {
+        if (!canEdit) {
+            return;
+        }
+
+        Node clicked2 = getClickedNode(view, event.getX(), event.getY());
+        Node newNode = null;
+
+        Path intersectPath = IntersectionUtils.getIntersectionPath(
+                appContext, view, new Point(event.getX(), event.getY())
+        );
+
+
+        if (intersectPath != null) {
+            Point p = Utils.traRoTra(event.getX(), event.getY(), view.getWidth() / 2, view.getHeight() / 2, appContext.dx, -appContext.dy, -appContext.angle);
+            addNode(view, event.getX(), event.getY());
+            Node a = intersectPath.a;
+            Node b = intersectPath.b;
+
+            Path pa = new Path();
+            pa.a = a;
+            pa.b = newNode;
+            intersectPath.cloneColors(pa);
+
+            Path pb = new Path();
+            pb.a = newNode;
+            pb.b = b;
+            intersectPath.cloneColors(pb);
+
+            appContext.app.paths.remove(intersectPath);
+            appContext.app.paths.add(pa);
+            appContext.app.paths.add(pb);
+
+            changed();
+        }
+
+
+    }
+
 
 }

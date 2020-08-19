@@ -17,7 +17,7 @@ public class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
 
     @Override
     public boolean onDoubleTap(MotionEvent e) {
-        System.out.println("double tap");
+        handler.doubleClick(canvasView, e);
         return super.onDoubleTap(e);
     }
 
