@@ -29,17 +29,8 @@ public class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
         return true;
     }
 
-    @Override
-    public boolean onDoubleTapEvent(MotionEvent e) {
-        System.out.println("onDoubleTapEvent");
-        return false;
-    }
 
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        System.out.println("onScroll");
-        return super.onScroll(e1, e2, distanceX, distanceY);
-    }
+
 
     @Override
     public void onLongPress(MotionEvent e) {
@@ -48,9 +39,17 @@ public class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
     }
 
     @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        handler.handleMove(canvasView, e2);
+        return true;
+    }
+
+    /*@Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         System.out.println("onFling");
-        return super.onFling(e1, e2, velocityX, velocityY);
-    }
+        handler.drag(canvasView,e1,e2);
+        canvasView.invalidate();
+        return true;
+    }*/
 
 }

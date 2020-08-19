@@ -9,9 +9,9 @@ import android.view.View;
 
 public class SubCanvasView extends View implements View.OnTouchListener{
     private SubCanvasViewDrawer drawer;
-    private AppState state;
     private float dx,dy;
     private SubCanvasListener listener;
+    private AppContext context;
 
 
     public SubCanvasView(Context context, AttributeSet attrs) {
@@ -23,8 +23,8 @@ public class SubCanvasView extends View implements View.OnTouchListener{
         this.listener=listener;
     }
 
-    public void setState(AppState state) {
-        this.state=state;
+    public void setState(AppContext context) {
+        this.context = context;
     }
 
     public void setDrawer(SubCanvasViewDrawer drawer) {
@@ -36,7 +36,7 @@ public class SubCanvasView extends View implements View.OnTouchListener{
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        drawer.drawSubCanvasView(canvas,dx,dy,state);
+        drawer.drawSubCanvasView(canvas, dx, dy);
     }
 
 

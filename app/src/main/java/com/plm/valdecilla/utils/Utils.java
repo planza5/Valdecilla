@@ -3,7 +3,6 @@ package com.plm.valdecilla.utils;
 import android.graphics.Canvas;
 import android.view.View;
 
-import com.plm.valdecilla.AppState;
 import com.plm.valdecilla.Point;
 import com.plm.valdecilla.model.Node;
 

@@ -12,10 +12,9 @@ import androidx.appcompat.app.AlertDialog;
 import com.plm.valdecilla.model.Node;
 
 
-public class CanvasView extends View implements View.OnTouchListener, SubCanvasListener {
-    private final Context context;
+public class CanvasView extends View implements SubCanvasListener {
     private CanvasViewDrawer drawer;
-    private AppState state;
+    private AppContext state;
     private CanvasViewHandler handler;
     private SubCanvasView subCanvasView;
     private int canvasWidth;
@@ -24,9 +23,8 @@ public class CanvasView extends View implements View.OnTouchListener, SubCanvasL
 
     public CanvasView(Context context, AttributeSet attrs){
         super(context,attrs);
-        this.context=context;
-        setOnTouchListener(this);
     }
+
 
 
     @Override
@@ -36,57 +34,28 @@ public class CanvasView extends View implements View.OnTouchListener, SubCanvasL
 
         canvas.save();
         canvas.translate(canvas.getWidth()/2,canvas.getHeight()/2);
-        canvas.rotate(AppState.angle);
+        canvas.rotate(state.angle);
         canvas.translate(-canvas.getWidth()/2,-canvas.getHeight()/2);
 
-        drawer.drawGrid(canvas,state);
+        drawer.drawGrid(canvas);
         canvas.restore();
-        //drawer.drawGrid(canvas,state);
-        drawer.drawPruebas(canvas,state);
-        drawer.drawPaths(canvas,state);
-        drawer.drawShadow(canvas,state);
-        drawer.drawNodes(canvas,state);
-        drawer.drawPruebas(canvas,state);
+        drawer.drawPaths(canvas);
+        drawer.drawShadow(canvas);
+        drawer.drawNodes(canvas);
     }
-
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        int action=event.getAction();
-
-        if(action== MotionEvent.ACTION_UP){
-            handler.handleUp(v,event);
-        } else if(action==MotionEvent.ACTION_MOVE){
-            handler.handleMove(v,event);
-        } else if(action==MotionEvent.ACTION_DOWN){
-            boolean doubleClick=handler.handleDown(v,event);
-
-            if(doubleClick && state.clicked1!=null){
-                handler.buildAlert(context,this);
-            }
-        }
-
-        this.invalidate();
-        subCanvasView.invalidate();
-
-        return true;
-    }
-
 
 
     public void setSubCanvasView(SubCanvasView subCanvasView) {
         this.subCanvasView=subCanvasView;
     }
-
     public void setDrawer(CanvasViewDrawer drawer) {
         this.drawer=drawer;
     }
-
-    public void setState(AppState state) {
-        this.state=state;
-    }
-
     public void setHandler(CanvasViewHandler handler) { this.handler=handler; }
+
+    public void setState(AppContext state) {
+        this.state = state;
+    }
 
     @Override
     public void touchSubcanvas(float subx, float suby, float thezoom) {

@@ -4,12 +4,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
-import android.hardware.SensorManager;
 
 import com.plm.valdecilla.model.Node;
 import com.plm.valdecilla.model.Path;
 
 public class SubCanvasViewDrawer {
+    private final AppContext appContext;
     private float zoom,width,height,minX,minY,maxX,maxY;
     private static final Paint painterStrokeNodes = new Paint(Paint.ANTI_ALIAS_FLAG);
     private static final Paint painterFillNodes = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -26,7 +26,11 @@ public class SubCanvasViewDrawer {
         painterStrokeNodes.setStyle(Paint.Style.STROKE);
     }
 
-    public void drawSubCanvasView(Canvas canvas, float dx, float dy,AppState state) {
+    public SubCanvasViewDrawer(AppContext appContext) {
+        this.appContext = appContext;
+    }
+
+    public void drawSubCanvasView(Canvas canvas, float dx, float dy) {
         //canvas.drawRect(0,0,canvas.getWidth(),canvas.getHeight(),painterFillBk);
         width=canvas.getWidth()-Ctes.SUBCANVAS_MARGIN;
         height=canvas.getHeight()-Ctes.SUBCANVAS_MARGIN;
@@ -37,7 +41,7 @@ public class SubCanvasViewDrawer {
         maxY=Float.MIN_VALUE;
 
 
-            for (Node one : state.app.nodes) {
+        for (Node one : appContext.app.nodes) {
                 if (one.x < minX) {
                     minX = one.x;
                 }
@@ -66,7 +70,7 @@ public class SubCanvasViewDrawer {
             }
             float radius=Ctes.RADIUS*zoom;
 
-            for(Node one:state.app.nodes){
+        for (Node one : appContext.app.nodes) {
                 one.sx=(one.x-minX)*zoom+width/2-cx*zoom/2+Ctes.SUBCANVAS_MARGIN/2;
                 one.sy=(one.y-minY)*zoom+height/2-cy*zoom/2+Ctes.SUBCANVAS_MARGIN/2;
             }
@@ -74,7 +78,7 @@ public class SubCanvasViewDrawer {
 
             painterStrokeNodes.setStrokeWidth(zoom*10);
 
-            for(Path path:state.app.paths){
+        for (Path path : appContext.app.paths) {
                 if (path.colors.get(0) == 0) {
                     painterStrokeNodes.setPathEffect(new DashPathEffect(new float[] {10,20}, 0));
                 }else{
@@ -87,7 +91,7 @@ public class SubCanvasViewDrawer {
             painterStrokeNodes.setPathEffect(null);
 
 
-            for(Node one:state.app.nodes) {
+        for (Node one : appContext.app.nodes) {
                 if(one.name.length()>0 || one.subnames.length()>0) {
                     canvas.drawCircle(one.sx, one.sy, radius, painterFillNodes);
                     canvas.drawCircle(one.sx, one.sy, radius, painterStrokeNodes);

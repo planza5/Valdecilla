@@ -1,5 +1,6 @@
 package com.plm.valdecilla;
 
+
 import android.content.Context;
 import android.text.InputType;
 import android.text.method.ScrollingMovementMethod;
@@ -19,43 +20,42 @@ import com.plm.valdecilla.utils.IntersectionUtils;
 import com.plm.valdecilla.utils.MathUtils;
 import com.plm.valdecilla.utils.Utils;
 
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 
 
 public class CanvasViewHandler {
-    private final AppState state;
+    private AppContext appContext;
     public boolean canEdit=true;
 
-    public CanvasViewHandler(AppState state) {
-        this.state=state;
+    public CanvasViewHandler(AppContext appContext) {
+        this.appContext = appContext;
         changed();
     }
 
-    private void click(View view, MotionEvent event) {
+    public void click(View view, MotionEvent event) {
         //click
         Node clicked2 = getClickedNode(view, event.getX(), event.getY());
         Node newNode = null;
+
         Path intersectPath = IntersectionUtils.getIntersectionPath(
-                state, state.app.paths, view, new Point(event.getX(), event.getY())
+                appContext, appContext.app.paths, view, new Point(event.getX(), event.getY())
         );
 
         if (clicked2 == null || intersectPath != null) {
-            Point p = Utils.traRoTra(event.getX(), event.getY(), view.getWidth() / 2, view.getHeight() / 2, state.dx, -state.dy, -AppState.angle);
+            Point p = Utils.traRoTra(event.getX(), event.getY(), view.getWidth() / 2, view.getHeight() / 2, appContext.dx, -appContext.dy, -appContext.angle);
 
-            p.x = Math.round((p.x) / Ctes.GRID) * Ctes.GRID;
-            p.y = Math.round((p.y) / Ctes.GRID) * Ctes.GRID;
+            /*p.x = Math.round((p.x) / Ctes.GRID) * Ctes.GRID;
+            p.y = Math.round((p.y) / Ctes.GRID) * Ctes.GRID;*/
 
             if (canEdit) {
                 newNode = new Node(p.x, p.y);
-                state.app.nodes.add(newNode);
+                appContext.app.nodes.add(newNode);
                 changed();
             }
         }
 
         if (intersectPath != null) {
-
             Node a = intersectPath.a;
             Node b = intersectPath.b;
 
@@ -69,22 +69,20 @@ public class CanvasViewHandler {
             pb.b = b;
             intersectPath.cloneColors(pb);
 
-            state.app.paths.remove(intersectPath);
-            state.app.paths.add(pa);
-            state.app.paths.add(pb);
+            appContext.app.paths.remove(intersectPath);
+            appContext.app.paths.add(pa);
+            appContext.app.paths.add(pb);
         }
     }
 
     public void handleUp(View view,MotionEvent event){
-        state.currentX=event.getX();
-        state.currentY=event.getY();
 
-        state.shadow.visible=false;
-        int distance= MathUtils.getDistance(state.lastX,state.lastY,event.getX(),event.getY());
 
-        if(distance<50){
-            click(view, event);
-        }else{
+        appContext.shadow.visible = false;
+
+        int distance = MathUtils.getDistance(appContext.lastX, appContext.lastY, event.getX(), event.getY());
+
+        if (distance > 50) {
             drag(view, event);
         }
     }
@@ -93,13 +91,13 @@ public class CanvasViewHandler {
         Point p = new Point(event.getX(), event.getY());
 
 
-        p = Utils.traRoTra(p.x, p.y, view.getWidth() / 2, view.getHeight() / 2, -AppState.angle);
-        p.x = Math.round((p.x + state.dx) / Ctes.GRID) * Ctes.GRID;
-        p.y = Math.round((p.y - state.dy) / Ctes.GRID) * Ctes.GRID;
+        p = Utils.traRoTra(p.x, p.y, view.getWidth() / 2, view.getHeight() / 2, appContext.dx, -appContext.dy, -appContext.angle);
+        /*p.x = Math.round((p.x) / Ctes.GRID) * Ctes.GRID;
+        p.y = Math.round((p.y) / Ctes.GRID) * Ctes.GRID;*/
 
         boolean existsNode = false;
 
-        for (Node one : state.app.nodes) {
+        for (Node one : appContext.app.nodes) {
             if (one.x == p.x && one.y == p.y) {
                 existsNode = true;
                 break;
@@ -107,8 +105,8 @@ public class CanvasViewHandler {
         }
 
         if (canEdit && !existsNode) {
-            state.clicked1.x = p.x;
-            state.clicked1.y = p.y;
+            appContext.clicked1.x = p.x;
+            appContext.clicked1.y = p.y;
             changed();
         }
     }
@@ -116,7 +114,7 @@ public class CanvasViewHandler {
     private void dragNodeInNode(View view, Node clicked1, Node clicked2, MotionEvent event) {
         Path path = null;
 
-        for (Path one : state.app.paths) {
+        for (Path one : appContext.app.paths) {
             if ((one.a == clicked1 && one.b == clicked2) || (one.a == clicked2 && one.b == clicked1)) {
                 path = one;
                 break;
@@ -127,12 +125,12 @@ public class CanvasViewHandler {
             path = new Path();
             path.a = clicked1;
             path.b = clicked2;
-            state.app.paths.add(path);
+            appContext.app.paths.add(path);
         }
 
 
-        if (!path.colors.contains(state.selectedColor)) {
-            path.colors.add(state.selectedColor);
+        if (!path.colors.contains(appContext.selectedColor)) {
+            path.colors.add(appContext.selectedColor);
         }
 
         if (path.colors.size() > 1 && path.colors.contains(0)) {
@@ -150,54 +148,54 @@ public class CanvasViewHandler {
     }
 
     private void dragViewInView(View view, MotionEvent event) {
-        Point p1 = new Point(state.lastX, state.lastY);
+        Point p1 = new Point(appContext.lastX, appContext.lastY);
         Point p2 = new Point(event.getX(), event.getY());
 
         Node nodeToRemove = null;
         Path pathToRemove = null;
 
-        nodeToRemove = IntersectionUtils.getIntersection(state, state.app.nodes, view, p1, p2);
+        nodeToRemove = IntersectionUtils.getIntersection(appContext, appContext.app.nodes, view, p1, p2);
 
         if (nodeToRemove != null) {
-            removePaths(state, nodeToRemove);
-            state.app.nodes.remove(nodeToRemove);
+            removePaths(appContext, nodeToRemove);
+            appContext.app.nodes.remove(nodeToRemove);
         } else {
-            pathToRemove = IntersectionUtils.getIntersectionPath(state, state.app.paths, view, p1, p2);
+            pathToRemove = IntersectionUtils.getIntersectionPath(appContext, appContext.app.paths, view, p1, p2);
 
             if (pathToRemove != null) {
-                boolean f = pathToRemove.colors.remove(new Integer(state.selectedColor));
+                boolean f = pathToRemove.colors.remove(new Integer(appContext.selectedColor));
 
                 if (pathToRemove.colors.size() == 0) {
-                    state.app.paths.remove(pathToRemove);
+                    appContext.app.paths.remove(pathToRemove);
                 }
             }
         }
 
         if (nodeToRemove == null && pathToRemove == null) {
-            p1 = Utils.traRoTra(p1.x, p1.y, view.getWidth() / 2, view.getHeight() / 2, -AppState.angle);
-            p2 = Utils.traRoTra(p2.x, p2.y, view.getWidth() / 2, view.getHeight() / 2, -AppState.angle);
-            p1 = Utils.translate(p1.x, p1.y, -state.dx, state.dy);
-            p2 = Utils.translate(p2.x, p2.y, -state.dx, state.dy);
+            p1 = Utils.traRoTra(p1.x, p1.y, view.getWidth() / 2, view.getHeight() / 2, -appContext.angle);
+            p2 = Utils.traRoTra(p2.x, p2.y, view.getWidth() / 2, view.getHeight() / 2, -appContext.angle);
+            p1 = Utils.translate(p1.x, p1.y, -appContext.dx, appContext.dy);
+            p2 = Utils.translate(p2.x, p2.y, -appContext.dx, appContext.dy);
 
-            state.dx -= p2.x - p1.x;
-            state.dy += p2.y - p1.y;
+            appContext.dx -= p2.x - p1.x;
+            appContext.dy += p2.y - p1.y;
         }
     }
 
-    private void drag(View view, MotionEvent event) {
+    public void drag(View view, MotionEvent event1) {
         //drag
-        Node clicked2 = getClickedNode(view, event.getX(), event.getY());
+        Node clicked2 = getClickedNode(view, event1.getX(), event1.getY());
 
-        if (state.clicked1 != null && clicked2 == null) {
-            dragNodeInView(view, event);
-        } else if (state.clicked1 != null && clicked2 != null && canEdit) {
-            dragNodeInNode(view, state.clicked1, clicked2, event);
-        } else if (clicked2 == null && state.clicked1 == null && canEdit) {
-            dragViewInView(view, event);
+        if (appContext.clicked1 != null && clicked2 == null) {
+            dragNodeInView(view, event1);
+        } else if (appContext.clicked1 != null && clicked2 != null && canEdit) {
+            dragNodeInNode(view, appContext.clicked1, clicked2, event1);
+        } else if (clicked2 == null && appContext.clicked1 == null && canEdit) {
+            dragViewInView(view, event1);
         }
     }
 
-    private void removePaths(AppState state, Node node) {
+    private void removePaths(AppContext state, Node node) {
         Iterator <Path>it=state.app.paths.iterator();
 
         while(it.hasNext()){
@@ -212,35 +210,32 @@ public class CanvasViewHandler {
 
     public boolean handleDown(View view,MotionEvent event){
         long currentTime=System.currentTimeMillis();
-        boolean doubleclick=currentTime-state.lastTime<250;
+        boolean doubleclick = currentTime - appContext.lastTime < 250;
 
 
-        state.lastTime=currentTime;
-        state.lastX=event.getX();
-        state.lastY=event.getY();
-        state.clicked1=getClickedNode(view, state.lastX,state.lastY);
+        appContext.lastTime = currentTime;
+        appContext.lastX = event.getX();
+        appContext.lastY = event.getY();
+        appContext.clicked1 = getClickedNode(view, appContext.lastX, appContext.lastY);
 
         return doubleclick;
     }
 
-    public Point getAngled(View view,float x, float y) {
-        return Utils.traRoTra(x, y, view.getWidth() / 2, view.getHeight() / 2, state.dx, -state.dy, AppState.angle);
-    }
+
 
     public void handleMove(View view,MotionEvent event){
-        if(state.clicked1!=null) {
-            Point p=getAngled(view,event.getX(),event.getY());
-            state.shadow.x = event.getX();
-            state.shadow.y = event.getY();
-            state.connected = getClickedNode(view,event.getX(),event.getY())!=null;
-            state.shadow.visible=true;
+        if (appContext.clicked1 != null) {
+            appContext.shadow.x = event.getX();
+            appContext.shadow.y = event.getY();
+            appContext.connected = getClickedNode(view, event.getX(), event.getY()) != null;
+            appContext.shadow.visible = true;
         }else{
-            state.connected=false;
+            appContext.connected = false;
         }
     }
 
     private Node getClickedNode(View view,float mouseX,float mouseY){
-        for(Node node:state.app.nodes){
+        for (Node node : appContext.app.nodes) {
             if(isNodeClicked(view,node,mouseX,mouseY)){
                 return node;
             }
@@ -252,7 +247,7 @@ public class CanvasViewHandler {
 
 
     private boolean isNodeClicked(View view,Node node, float x, float y){
-        Point p = Utils.traRoTra(x, y, view.getWidth() / 2, view.getHeight() / 2, state.dx, -state.dy, -AppState.angle);
+        Point p = Utils.traRoTra(x, y, view.getWidth() / 2, view.getHeight() / 2, appContext.dx, -appContext.dy, -appContext.angle);
         return p.x>node.x-Ctes.RADIUS && p.x<node.x+Ctes.RADIUS && p.y>node.y-Ctes.RADIUS && p.y<node.y+Ctes.RADIUS;
 
     }
@@ -260,7 +255,7 @@ public class CanvasViewHandler {
 
 
     public void buildAlert(Context context, View view) {
-        final Node node=state.clicked1;
+        final Node node = appContext.clicked1;
 
         if(node==null){
             return;
@@ -274,9 +269,9 @@ public class CanvasViewHandler {
 
 
         final EditText textName = (EditText)dialog.findViewById(R.id.nodeDialogEditTextNodeName);
-        textName.setText(state.clicked1.name);
+        textName.setText(appContext.clicked1.name);
         final EditText textSubName = (EditText)dialog.findViewById(R.id.nodeDialogEditTextSubNodeName);
-        textSubName.setText(state.clicked1.subnames);
+        textSubName.setText(appContext.clicked1.subnames);
         final Button buttonOk=(Button)dialog.findViewById(R.id.nodeDialogOk);
         final Button buttonCancel=(Button)dialog.findViewById(R.id.nodeDialogCancel);
 
@@ -319,19 +314,20 @@ public class CanvasViewHandler {
     }
 
     public void changed(){
-        String json= GsonUtils.toJson(state.app);
+        String json = GsonUtils.toJson(appContext.app);
 
-        if(AppState.history.size()==Ctes.MAX_STACK_SIZE){
-            AppState.history.remove(0);
+        if (appContext.history.size() == Ctes.MAX_STACK_SIZE) {
+            appContext.history.remove(0);
         }
 
-        int toRemove= AppState.history.size()- AppState.idx;
+        int toRemove = appContext.history.size() - appContext.historyIndex;
 
         for(int i=0;i<toRemove-1;i++){
-            AppState.history.remove(AppState.history.size()-1);
+            appContext.history.remove(appContext.history.size() - 1);
         }
 
-        AppState.history.push(json);
-        AppState.idx=AppState.history.size()-1;
+        appContext.history.push(json);
+        appContext.historyIndex = appContext.history.size() - 1;
     }
+
 }

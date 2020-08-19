@@ -8,13 +8,9 @@ import android.text.TextPaint;
 
 import com.plm.valdecilla.model.Node;
 import com.plm.valdecilla.model.Path;
-import com.plm.valdecilla.utils.MathUtils;
 import com.plm.valdecilla.utils.Utils;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 public class CanvasViewDrawer {
 
@@ -25,25 +21,22 @@ public class CanvasViewDrawer {
     private static final Paint painterFillNodes = new Paint(Paint.ANTI_ALIAS_FLAG);
     private static final Paint painterStrokeShadow = new Paint(Paint.ANTI_ALIAS_FLAG);
     private static final Paint painterStrokeGrid = new Paint(Paint.ANTI_ALIAS_FLAG);
-
     private static final Paint painterText= new TextPaint();
     private static final float STROKE_NODES = 12;
     private static final DashPathEffect dottedEffect=new DashPathEffect(new float[] {10,20}, 0);
+    private final AppContext context;
 
 
-
-    public void drawPruebas(Canvas canvas, AppState state){
-        if(AppState.ptest1!=null && AppState.ptest2!=null) {
-            canvas.drawLine(AppState.ptest1.x, AppState.ptest1.y, AppState.ptest2.x, AppState.ptest2.y, painterStrokeGrid);
-        }
+    public CanvasViewDrawer(AppContext context) {
+        this.context = context;
     }
 
 
-    public void drawNodes(Canvas canvas, AppState state){
-        for(Node node:state.app.nodes){
+    public void drawNodes(Canvas canvas) {
+        for (Node node : context.app.nodes) {
             //trasladamos al origen 0,0
-            Point p=Utils.traRoTra(node.x-state.dx,node.y+state.dy,canvas.getWidth()/2,canvas.getHeight()/2,AppState.angle);
-            //Utils.translate(p,-state.dx,state.dy);
+            Point p = Utils.traRoTra(node.x - context.dx, node.y + context.dy, canvas.getWidth() / 2, canvas.getHeight() / 2, context.angle);
+            //Utils.translate(p,-context.dx,context.dy);
             canvas.drawCircle(p.x, p.y, Ctes.RADIUS, painterFillNodes);
             canvas.drawCircle(p.x, p.y, Ctes.RADIUS, painterStrokeNodes);
 
@@ -56,36 +49,42 @@ public class CanvasViewDrawer {
                 width = painterText.measureText(words[i]);
                 canvas.drawText(words[i],p.x-width/2,p.y+90+40*i,painterText);
             }
+        }
 
 
+        if (context.p1 != null && context.p2 != null && context.p3 != null) {
+            canvas.drawCircle(context.p1.x, context.p1.y, 10, painterFillBk);
+            canvas.drawCircle(context.p2.x, context.p2.y, 20, painterStrokeNodes);
+            canvas.drawCircle(context.p3.x, context.p3.y, 20, painterStrokeNodes);
+            canvas.drawCircle(context.p4.x, context.p4.y, 5, painterStrokeNodes);
+            canvas.drawCircle(context.p5.x, context.p5.y, 5, painterStrokeNodes);
         }
     }
 
 
-    public void drawShadow(Canvas canvas, AppState state){
-        if(state.clicked1 !=null && state.shadow!=null && state.shadow.visible) {
-            painterStrokeShadow.setPathEffect(state.connected ? null : dottedEffect);
-            painterStrokeShadow.setColor(state.connected ? Color.BLACK : Color.GRAY);
-            Point p1=new Point(state.clicked1.x-state.dx,state.clicked1.y+state.dy);
-            p1=Utils.traRoTra(p1.x,p1.y,canvas.getWidth()/2,canvas.getHeight()/2,AppState.angle);
-            //Point p2=Utils.traRoTra(state.shadow.x,state.shadow.y,canvas.getWidth()/2,canvas.getHeight()/2,state.dx,state.dy,AppState.angle);
+    public void drawShadow(Canvas canvas) {
+        if (context.clicked1 != null && context.shadow != null && context.shadow.visible) {
+            painterStrokeShadow.setPathEffect(context.connected ? null : dottedEffect);
+            painterStrokeShadow.setColor(context.connected ? Color.BLACK : Color.GRAY);
+            Point p1 = new Point(context.clicked1.x - context.dx, context.clicked1.y + context.dy);
+            p1 = Utils.traRoTra(p1.x, p1.y, canvas.getWidth() / 2, canvas.getHeight() / 2, context.angle);
+            //Point p2=Utils.traRoTra(context.shadow.x,context.shadow.y,canvas.getWidth()/2,canvas.getHeight()/2,context.dx,context.dy,AppState.angle);
 
-            canvas.drawLine(p1.x, p1.y , state.shadow.x, state.shadow.y, painterStrokeShadow);
-            canvas.drawCircle(state.shadow.x, state.shadow.y, Ctes.RADIUS, painterStrokeShadow);
+            canvas.drawLine(p1.x, p1.y, context.shadow.x, context.shadow.y, painterStrokeShadow);
+            canvas.drawCircle(context.shadow.x, context.shadow.y, Ctes.RADIUS, painterStrokeShadow);
         }
     }
 
 
-
-    public void drawPaths(Canvas canvas, AppState state){
-        for (Path one : state.app.paths) {
+    public void drawPaths(Canvas canvas) {
+        for (Path one : context.app.paths) {
             Collections.sort(one.colors);
 
-            Point p1 = new Point(one.a.x - state.dx, one.a.y + state.dy);
-            Point p2 = new Point(one.b.x - state.dx, one.b.y + state.dy);
+            Point p1 = new Point(one.a.x - context.dx, one.a.y + context.dy);
+            Point p2 = new Point(one.b.x - context.dx, one.b.y + context.dy);
 
-            p1 = Utils.traRoTra(p1.x, p1.y, canvas.getWidth() / 2, canvas.getHeight() / 2, AppState.angle);
-            p2 = Utils.traRoTra(p2.x, p2.y, canvas.getWidth() / 2, canvas.getHeight() / 2, AppState.angle);
+            p1 = Utils.traRoTra(p1.x, p1.y, canvas.getWidth() / 2, canvas.getHeight() / 2, context.angle);
+            p2 = Utils.traRoTra(p2.x, p2.y, canvas.getWidth() / 2, canvas.getHeight() / 2, context.angle);
 
             double normal = Math.atan2(p2.y - p1.y, p2.x - p1.x) + Math.PI / 2;
 
@@ -114,12 +113,12 @@ public class CanvasViewDrawer {
         }
     }
 
-    public void drawGrid(Canvas canvas, AppState state) {
+    public void drawGrid(Canvas canvas) {
 
         //canvas.drawRect(0,0,canvas.getWidth(),canvas.getHeight(),painterFillBk);
 
-        float incx=state.dx%Ctes.GRID;
-        float incy=state.dy%Ctes.GRID;
+        float incx = context.dx % Ctes.GRID;
+        float incy = context.dy % Ctes.GRID;
 
         for(int i=-10;i<10;i++) {
             canvas.drawLine(-100, i*Ctes.GRID+incy, canvas.getWidth()+100, i*Ctes.GRID+incy, painterStrokeGrid);
