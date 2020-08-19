@@ -92,13 +92,14 @@ public class SubCanvasViewDrawer {
 
 
         for (Node one : appContext.app.nodes) {
-                if(one.name.length()>0 || one.subnames.length()>0) {
-                    canvas.drawCircle(one.sx, one.sy, radius, painterFillNodes);
-                    canvas.drawCircle(one.sx, one.sy, radius, painterStrokeNodes);
+            if (one.selected) {
+                painterStrokeNodes.setColor(Color.RED);
                 }else{
-                    canvas.drawCircle(one.sx, one.sy, radius/2, painterFillBk);
-                    canvas.drawCircle(one.sx, one.sy, radius/2, painterStrokeNodes);
+                painterStrokeNodes.setColor(Color.BLACK);
                 }
+
+            canvas.drawCircle(one.sx, one.sy, radius, painterFillNodes);
+            canvas.drawCircle(one.sx, one.sy, radius, painterStrokeNodes);
             }
             //canvas.drawLine(0,0,canvas.getWidth(),0,painterStrokeNodes);
             //canvas.drawLine(0,canvas.getHeight()-1,canvas.getWidth(),canvas.getHeight()-1,painterStrokeNodes);

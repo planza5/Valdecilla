@@ -38,8 +38,14 @@ public class CanvasViewDrawer {
             Point p = Utils.traRoTra(node.x - context.dx, node.y + context.dy, canvas.getWidth() / 2, canvas.getHeight() / 2, context.angle);
             //Utils.translate(p,-context.dx,context.dy);
             canvas.drawCircle(p.x, p.y, Ctes.RADIUS, painterFillNodes);
-            canvas.drawCircle(p.x, p.y, Ctes.RADIUS, painterStrokeNodes);
 
+            if (node.selected) {
+                painterStrokeNodes.setColor(Color.RED);
+            } else {
+                painterStrokeNodes.setColor(Color.BLACK);
+            }
+
+            canvas.drawCircle(p.x, p.y, Ctes.RADIUS, painterStrokeNodes);
             float width = painterText.measureText(node.name);
             canvas.drawText(node.name,p.x-width/2,p.y-60,painterText);
 

@@ -362,6 +362,8 @@ public class CanvasViewHandler {
         if (newnode == null) {
             newnode = addNode(view, event.getX(), event.getY());
         } else {
+            newnode.selected = !newnode.selected;
+            changed();
             return;
         }
 
