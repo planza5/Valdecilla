@@ -1,13 +1,17 @@
 package com.plm.valdecilla;
 
 import android.view.GestureDetector;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.PopupMenu;
 
 public class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
     private final CanvasView canvasView;
     private final CanvasViewHandler handler;
     private final SubCanvasView subCanvasView;
+    private PopupMenu popup;
+
 
     public MyGestureListener(CanvasView canvasView, SubCanvasView subCanvasView, CanvasViewHandler handler) {
         this.canvasView = canvasView;
@@ -34,8 +38,20 @@ public class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
 
     @Override
     public void onLongPress(MotionEvent e) {
-        System.out.println("onLongPress");
-        super.onLongPress(e);
+        if (popup == null) {
+            popup = new PopupMenu(canvasView.getContext(), canvasView);
+            popup.inflate(R.menu.popup_menu);
+        }
+
+       /*popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClSickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+
+                if(item.getAC
+                return true;
+            }
+        });*/
+
+        popup.show();//showing popup menu
     }
 
     @Override

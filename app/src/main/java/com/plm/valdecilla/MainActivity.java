@@ -6,12 +6,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements HandlerCallback {
+
     private AppContext appContext = new AppContext();
     private CanvasView canvasView;
     private SubCanvasView subCanvasView;
@@ -41,20 +45,19 @@ public class MainActivity extends AppCompatActivity{
     private static final int SAVE = 1111;
     private static final int LOAD = 2222;
 
-    private ToggleButton toggleEditButton=null;
-
     private GestureDetector mDetector;
+    private Vibrator vibra;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        vibra = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         appContext.shadow.visible = false;
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        canvasHandler = new CanvasViewHandler(appContext);
+        canvasHandler = new CanvasViewHandler(appContext, this);
         canvasView=findViewById(R.id.canvas1);
         subCanvasView=findViewById(R.id.canvas2);
 
@@ -106,20 +109,15 @@ public class MainActivity extends AppCompatActivity{
 
         spinner.setAdapter(adapter);
 
-        toggleEditButton=(ToggleButton)findViewById(R.id.editButton);
-        toggleEditButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                canvasHandler.canEdit=!isChecked;
-            }
-        });
-
-
 
     }
 
+    public void clickLetEdit(MenuItem item) {
+        item.setChecked(!item.isChecked());
+        canvasHandler.canEdit = item.isChecked();
+    }
 
-    public void clickSaveAs(View view) {
+    public void clickSaveAs(MenuItem item) {
         Intent intent = new Intent()
                 .setType("*/*")
                 .setAction(Intent.ACTION_CREATE_DOCUMENT);
@@ -129,15 +127,15 @@ public class MainActivity extends AppCompatActivity{
 
     private Uri fileUri =null;
 
-    public void clickSave(View view) {
+    public void clickSave(MenuItem item) {
         if(fileUri==null){
-            clickSaveAs(view);
+            clickSaveAs(item);
         }else{
             saveState();
         }
     }
 
-    public void clickLoad(View view) {
+    public void clickLoad(MenuItem item) {
         Intent intent = new Intent()
                 .setType("*/*")
                 .setAction(Intent.ACTION_GET_CONTENT);
@@ -268,31 +266,14 @@ public class MainActivity extends AppCompatActivity{
         }
     };
 
-    public void clickTest1(View view) {
-        appContext.p1 = null;
-        appContext.p2 = null;
-        appContext.p3 = null;
-        appContext.p4 = null;
-        appContext.p5 = null;
-        appContext.dx = 0;
-        appContext.dy = 0;
-        appContext.angle = 0;
-        canvasView.invalidate();
-        subCanvasView.invalidate();
+
+    @Override
+    public void startTask(int task) {
+
     }
 
-    public void clickTest2(View view) {
-        appContext.p1 = null;
-        appContext.p2 = null;
-        appContext.p3 = null;
-        appContext.p4 = null;
-        appContext.p5 = null;
-        appContext.app.paths.clear();
-        appContext.app.nodes.clear();
-        appContext.dx = 0;
-        appContext.dy = 0;
-        appContext.angle = 0;
-        canvasView.invalidate();
-        subCanvasView.invalidate();
+    @Override
+    public void endTask(int task) {
+        vibra.vibrate(100);
     }
 }

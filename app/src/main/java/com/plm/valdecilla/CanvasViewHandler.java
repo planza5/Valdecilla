@@ -24,11 +24,13 @@ import java.util.Iterator;
 
 
 public class CanvasViewHandler {
+    private final HandlerCallback callback;
     private AppContext appContext;
     public boolean canEdit=true;
 
-    public CanvasViewHandler(AppContext appContext) {
+    public CanvasViewHandler(AppContext appContext, HandlerCallback callback) {
         this.appContext = appContext;
+        this.callback = callback;
         changed();
     }
 
@@ -172,7 +174,7 @@ public class CanvasViewHandler {
                 return i1.compareTo(i2);
             }
         });
-
+        changed();
 
     }
 
@@ -188,6 +190,7 @@ public class CanvasViewHandler {
         if (nodeToRemove != null) {
             removePaths(appContext, nodeToRemove);
             appContext.app.nodes.remove(nodeToRemove);
+            changed();
         } else {
             pathToRemove = IntersectionUtils.getIntersectionPath(appContext, view, p1, p2);
 
@@ -198,6 +201,7 @@ public class CanvasViewHandler {
                     appContext.app.paths.remove(pathToRemove);
                 }
             }
+            changed();
         }
 
         if (nodeToRemove == null && pathToRemove == null) {
@@ -350,6 +354,7 @@ public class CanvasViewHandler {
 
         appContext.history.push(json);
         appContext.historyIndex = appContext.history.size() - 1;
+        callback.endTask(0);
     }
 
     public void click(CanvasView view, MotionEvent event) {
@@ -363,7 +368,6 @@ public class CanvasViewHandler {
             newnode = addNode(view, event.getX(), event.getY());
         } else {
             newnode.selected = !newnode.selected;
-            changed();
             return;
         }
 

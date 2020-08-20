@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/popupmenu"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content">
+    <group android:id="@+id/filegroup">
+        <item
+            android:id="@+id/saveFile"
+            android:title="Guardar"
+            android:onClick="clickSave" />
+        <item
+            android:id="@+id/save"
+            android:title="Guardar como..."
+            android:onClick="clickSaveAs" />
+        <item
+            android:id="@+id/openFile"
+            android:title="Abrir archivo..."
+            android:onClick="clickLoad" />
+    </group>
+    <group android:id="@+id/editgroup">
+        <item
+            android:checkable="true"
+            android:checked="true"
+            android:id="@+id/letEdit"
+            android:title="Permitir edición"
+            android:onClick="clickLetEdit" />
+    </group>
+
+</menu>

@@ -17,65 +17,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:layout_margin="5dp"
-            android:id="@+id/linearLayoutHorizontal1"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-
-            android:gravity="center"
-            android:orientation="horizontal">
-                <Button
-                    android:layout_marginHorizontal="5dp"
-                    android:background="@drawable/custom_border"
-                    android:id="@+id/save"
-                    android:onClick="clickSave"
-                    android:text="Save"
-                    android:textSize="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"/>
-
-                <Button
-                    android:layout_marginHorizontal="5dp"
-                    android:background="@drawable/custom_border"
-                    android:id="@+id/saveas"
-                    android:onClick="clickSaveAs"
-                    android:text="Save As..."
-                    android:textSize="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"/>
-
-                <Button
-                    android:layout_marginHorizontal="5dp"
-                    android:background="@drawable/custom_border"
-                    android:id="@+id/load"
-                    android:onClick="clickLoad"
-                    android:text="Load"
-                    android:textSize="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"/>
-
-
-                <Button
-                    android:layout_marginHorizontal="5dp"
-                    android:background="@drawable/custom_border"
-                    android:id="@+id/test1"
-                    android:onClick="clickTest1"
-                    android:text="1"
-                    android:textSize="10dp"
-                    android:layout_width="0dp"
-                    android:layout_height="30dp" />
-
-                <Button
-                    android:layout_marginHorizontal="5dp"
-                    android:background="@drawable/custom_border"
-                    android:id="@+id/test2"
-                    android:onClick="clickTest2"
-                    android:text="2"
-                    android:textSize="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp" />
-        </LinearLayout>
 
                 <com.plm.valdecilla.CanvasView
                     android:clickable="true"
@@ -146,16 +87,6 @@
                             android:layout_width="40dp"
                             android:layout_height="40dp"/>
 
-
-                        <ToggleButton
-                            android:layout_marginHorizontal="5dp"
-                            android:background="@drawable/custom_border"
-                            android:id="@+id/editButton"
-                            android:textOff=" "
-                            android:textOn="X"
-                            android:textSize="12dp"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"/>
 
                         <ImageButton
                             android:layout_marginHorizontal="5dp"
