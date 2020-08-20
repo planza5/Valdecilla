@@ -24,11 +24,11 @@ import java.util.Iterator;
 
 
 public class CanvasViewHandler {
-    private final HandlerCallback callback;
+    private final IHandlerCallback callback;
     private AppContext appContext;
     public boolean canEdit=true;
 
-    public CanvasViewHandler(AppContext appContext, HandlerCallback callback) {
+    public CanvasViewHandler(AppContext appContext, IHandlerCallback callback) {
         this.appContext = appContext;
         this.callback = callback;
         changed();

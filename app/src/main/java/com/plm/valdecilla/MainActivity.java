@@ -20,9 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
 import android.widget.Spinner;
-import android.widget.ToggleButton;
 
 import com.plm.valdecilla.model.App;
 import com.plm.valdecilla.utils.GsonUtils;
@@ -35,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements HandlerCallback {
+public class MainActivity extends AppCompatActivity implements IHandlerCallback {
 
     private AppContext appContext = new AppContext();
     private CanvasView canvasView;
@@ -268,12 +266,12 @@ public class MainActivity extends AppCompatActivity implements HandlerCallback {
 
 
     @Override
-    public void startTask(int task) {
+    public void startTask(int task, Object... values) {
 
     }
 
     @Override
-    public void endTask(int task) {
+    public void endTask(int task, Object... values) {
         vibra.vibrate(100);
     }
 }
