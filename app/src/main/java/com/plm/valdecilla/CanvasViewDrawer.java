@@ -14,7 +14,7 @@ import java.util.Collections;
 
 public class CanvasViewDrawer {
 
-    private static final Paint painterFillBk=new Paint(Paint.ANTI_ALIAS_FLAG);
+    private static final Paint painterFillArrow = new Paint(Paint.ANTI_ALIAS_FLAG);
     private static final Paint painterStrokePaths = new Paint(Paint.ANTI_ALIAS_FLAG);
     private static final Paint painterStrokeNodes = new Paint(Paint.ANTI_ALIAS_FLAG);
     private static final Paint painterStrokeWhite = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -25,7 +25,7 @@ public class CanvasViewDrawer {
     private static final float STROKE_NODES = 12;
     private static final DashPathEffect dottedEffect=new DashPathEffect(new float[] {10,20}, 0);
     private final AppContext context;
-
+    private android.graphics.Path arrow;
 
     public CanvasViewDrawer(AppContext context) {
         this.context = context;
@@ -65,7 +65,7 @@ public class CanvasViewDrawer {
             context.p4 = Utils.traRoTra(context.p4.x - context.dx, context.p4.y + context.dy, canvas.getWidth() / 2, canvas.getHeight() / 2, context.angle);
             context.p5 = Utils.traRoTra(context.p5.x - context.dx, context.p5.y + context.dy, canvas.getWidth() / 2, canvas.getHeight() / 2, context.angle);
 
-            canvas.drawCircle(context.p1.x, context.p1.y, 10, painterFillBk);
+            //canvas.drawCircle(context.p1.x, context.p1.y, 10, painterFillBk);
             canvas.drawCircle(context.p2.x, context.p2.y, 20, painterStrokeNodes);
             canvas.drawCircle(context.p3.x, context.p3.y, 20, painterStrokeNodes);
             canvas.drawCircle(context.p4.x, context.p4.y, 5, painterStrokeNodes);
@@ -127,7 +127,26 @@ public class CanvasViewDrawer {
 
     public void drawGrid(Canvas canvas) {
 
-        //canvas.drawRect(0,0,canvas.getWidth(),canvas.getHeight(),painterFillBk);
+        if (arrow == null) {
+            arrow = new android.graphics.Path();
+            float w = canvas.getWidth();
+            float h = canvas.getHeight();
+            arrow.reset();
+
+            arrow.moveTo(w / 2 - 80, h / 2 + 200);
+            arrow.lineTo(w / 2 - 80, h / 2);
+            arrow.lineTo(w / 2 - 150, h / 2);
+
+            arrow.lineTo(w / 2, h / 2 - 200);//punta
+
+            arrow.lineTo(w / 2 + 150, h / 2);
+            arrow.lineTo(w / 2 + 80, h / 2);
+            arrow.lineTo(w / 2 + 80, h / 2 + 200);
+
+            arrow.lineTo(w / 2 - 80, h / 2 + 200);
+        }
+
+        canvas.drawPath(arrow, painterFillArrow);
 
         float incx = context.dx % Ctes.GRID;
         float incy = context.dy % Ctes.GRID;
@@ -166,7 +185,7 @@ public class CanvasViewDrawer {
         painterStrokePaths.setColor(Color.BLACK);
 
         painterStrokeWhite.setColor(Color.WHITE);
-        painterFillBk.setColor(Color.rgb(250,250,200));
+        painterFillArrow.setColor(Color.rgb(250 - 10, 250 - 10, 200 - 10));
     }
 
 

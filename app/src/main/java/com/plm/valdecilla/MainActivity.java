@@ -35,6 +35,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements IHandlerCallback {
 
+    private CanvasViewAnimator canvasViewAnimator;
     private AppContext appContext = new AppContext();
     private CanvasView canvasView;
     private SubCanvasView subCanvasView;
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements IHandlerCallback 
         setContentView(R.layout.activity_main);
         vibra = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         appContext.shadow.visible = false;
+
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -107,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements IHandlerCallback 
 
         spinner.setAdapter(adapter);
 
+        canvasViewAnimator = new CanvasViewAnimator(appContext, canvasView);
 
     }
 
@@ -224,26 +227,14 @@ public class MainActivity extends AppCompatActivity implements IHandlerCallback 
 
     }
 
+
     public void rotate90right(View view) {
-        appContext.angle += Ctes.INC_ANGLE;
-
-        if (appContext.angle == 360) {
-            appContext.angle = 0;
-        }
-
-        System.out.println(appContext.angle);
-        canvasView.invalidate();
+        canvasViewAnimator.animateAngle(appContext.angle, appContext.angle + 90);
     }
 
+
     public void rotate90left(View view) {
-        appContext.angle -= Ctes.INC_ANGLE;
-
-        if (appContext.angle == -45) {
-            appContext.angle = 315;
-        }
-
-        System.out.println(appContext.angle);
-        canvasView.invalidate();
+        canvasViewAnimator.animateAngle(appContext.angle, appContext.angle - 90);
     }
 
 
