@@ -410,4 +410,6 @@ public class CanvasViewHandler {
     }
 
 
+    public void handleBox() {
+    }
 }

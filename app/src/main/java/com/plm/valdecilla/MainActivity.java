@@ -281,4 +281,8 @@ public class MainActivity extends AppCompatActivity implements ITaskCallback {
     public void endTask(int task, Object... values) {
         vibra.vibrate(100);
     }
+
+    public void clickBox(View view) {
+        canvasHandler.handleBox();
+    }
 }
