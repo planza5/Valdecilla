@@ -66,7 +66,7 @@ public class SubCanvasViewDrawer {
             }
 
             if(zoom>1){
-                zoom=1f;
+                zoom = 0.5f;
             }
             float radius=Ctes.RADIUS*zoom;
 

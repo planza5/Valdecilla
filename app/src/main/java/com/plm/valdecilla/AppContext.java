@@ -7,7 +7,6 @@ import java.util.ArrayDeque;
 import java.util.Stack;
 
 public class AppContext {
-
     public float dx;
     public float dy;
     public App app = new App();
@@ -21,9 +20,19 @@ public class AppContext {
     public int historyIndex;
     public float lastY;
     public float lastX;
-    public long lastTime;
+    public Node animatedNode;
+    public float animatedRadius;
+    public boolean animatingAngle;
 
-    public Point p1, p2, p3;
 
-    public Point p4, p5;
+    public void setDx(float value) {
+        dx = value;
+    }
+
+    public void setDy(float value) {
+        dy = value;
+    }
+
+//    public Point p1, p2, p3,p4, p5;
+
 }

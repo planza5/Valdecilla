@@ -20,7 +20,9 @@
 
                 <com.plm.valdecilla.CanvasView
                     android:clickable="true"
-                    android:layout_margin="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
                     android:background="@drawable/custom_border"
                     android:id="@+id/canvas1"
                     android:layout_width="match_parent"
@@ -29,7 +31,9 @@
 
                 <com.plm.valdecilla.SubCanvasView
                     android:clickable="true"
-                    android:layout_margin="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
                     android:background="@drawable/custom_border"
                     android:id="@+id/canvas2"
                     android:layout_width="match_parent"
@@ -39,7 +43,10 @@
 
                 <LinearLayout
                         android:id="@+id/linearLayoutHorizontal"
-                        android:layout_margin="5dp"
+                    android:clickable="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="0.2"
@@ -47,70 +54,77 @@
                         android:orientation="horizontal">
 
                         <Spinner
-                            android:layout_marginHorizontal="5dp"
+                            android:layout_marginHorizontal="2.5dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="5dp"
                             android:background="@drawable/custom_border"
                             android:padding="2dp"
                             android:id="@+id/spinner"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp" />
+                            android:layout_width="35dp"
+                            android:layout_height="wrap_content" />
 
                         <ImageButton
-                            android:layout_marginHorizontal="5dp"
+                            android:layout_marginHorizontal="2.5dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="5dp"
                             android:background="@drawable/custom_border"
                             android:onClick="rotate90left"
-                            android:padding="5dp"
                             android:src="@drawable/rotate_left"
                             android:scaleType="fitCenter"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"/>
+                            android:layout_width="35dp"
+                            android:layout_height="wrap_content" />
 
 
 
 
                         <ImageButton
-                            android:layout_marginHorizontal="5dp"
+                            android:layout_marginHorizontal="2.5dp"
                             android:background="@drawable/custom_border"
-                            android:padding="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="5dp"
                             android:id="@+id/undo"
                             android:onClick="undo"
                             android:scaleType="fitCenter"
                             android:src="@drawable/undo"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"/>
+                            android:layout_width="35dp"
+                            android:layout_height="wrap_content" />
 
                         <ImageButton
-                            android:layout_marginHorizontal="5dp"
+                            android:layout_marginHorizontal="2.5dp"
                             android:background="@drawable/custom_border"
-                            android:padding="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="5dp"
                             android:id="@+id/redo"
                             android:onClick="redo"
                             android:scaleType="fitCenter"
                             android:src="@drawable/redo"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"/>
+                            android:layout_width="35dp"
+                            android:layout_height="wrap_content" />
 
 
                         <ImageButton
-                            android:layout_marginHorizontal="5dp"
+                            android:layout_marginHorizontal="2.5dp"
                             android:clickable="true"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="5dp"
                             android:onClick="rotate90right"
                             android:background="@drawable/custom_border"
-                            android:padding="5dp"
                             android:scaleType="fitCenter"
                             android:src="@drawable/rotate_right"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"/>
+                            android:layout_width="35dp"
+                            android:layout_height="wrap_content" />
 
                         <ImageButton
-                            android:layout_marginHorizontal="5dp"
+                            android:layout_marginHorizontal="2.5dp"
                             android:clickable="true"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="5dp"
                             android:onClick="rotate90right"
                             android:background="@drawable/custom_border"
-                            android:padding="5dp"
                             android:scaleType="fitCenter"
                             android:src="@drawable/box"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp" />
+                            android:layout_width="35dp"
+                            android:layout_height="wrap_content" />
                 </LinearLayout>
 
 

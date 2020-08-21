@@ -3,18 +3,14 @@ package com.plm.valdecilla;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-
-import androidx.appcompat.app.AlertDialog;
 
 import com.plm.valdecilla.model.Node;
 
 
 public class CanvasView extends View implements SubCanvasListener {
     private CanvasViewDrawer drawer;
-    private AppContext state;
+    private AppContext appContext;
     private CanvasViewHandler handler;
     private SubCanvasView subCanvasView;
     private int canvasWidth;
@@ -34,7 +30,7 @@ public class CanvasView extends View implements SubCanvasListener {
 
         canvas.save();
         canvas.translate(canvas.getWidth()/2,canvas.getHeight()/2);
-        canvas.rotate(state.angle);
+        canvas.rotate(appContext.angle);
         canvas.translate(-canvas.getWidth()/2,-canvas.getHeight()/2);
 
         drawer.drawGrid(canvas);
@@ -54,7 +50,7 @@ public class CanvasView extends View implements SubCanvasListener {
     public void setHandler(CanvasViewHandler handler) { this.handler=handler; }
 
     public void setState(AppContext state) {
-        this.state = state;
+        this.appContext = state;
     }
 
     @Override
@@ -64,7 +60,7 @@ public class CanvasView extends View implements SubCanvasListener {
         float sc_minY = Float.MAX_VALUE;
         float sc_maxY = Float.MIN_VALUE;
 
-        for (Node one : state.app.nodes) {
+        for (Node one : appContext.app.nodes) {
             if (one.sx < sc_minX) {
                 sc_minX = one.sx;
             }
@@ -85,7 +81,7 @@ public class CanvasView extends View implements SubCanvasListener {
         float c_minY = Float.MAX_VALUE;
         float c_maxY = Float.MIN_VALUE;
 
-        for (Node one : state.app.nodes) {
+        for (Node one : appContext.app.nodes) {
             if (one.x < c_minX) {
                 c_minX = one.x;
             }
@@ -112,8 +108,8 @@ public class CanvasView extends View implements SubCanvasListener {
         float xreal = xtpc * canvas_width / 100;
         float yreal = ytpc * canvas_height / 100;
 
-        state.dx = xreal + c_minX - canvasWidth / 2;
-        state.dy = -yreal - c_minY + canvasHeight / 2;
+        appContext.dx = (xreal + c_minX - canvasWidth / 2);
+        appContext.dy = (-yreal - c_minY + canvasHeight / 2);
 
 
 

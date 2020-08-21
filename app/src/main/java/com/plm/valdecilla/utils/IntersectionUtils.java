@@ -1,6 +1,5 @@
 package com.plm.valdecilla.utils;
 
-import android.view.MotionEvent;
 import android.view.View;
 
 
@@ -11,7 +10,6 @@ import com.plm.valdecilla.model.Node;
 import com.plm.valdecilla.model.Path;
 
 import java.util.Iterator;
-import java.util.List;
 
 public class IntersectionUtils
 {

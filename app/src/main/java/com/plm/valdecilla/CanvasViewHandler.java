@@ -24,11 +24,11 @@ import java.util.Iterator;
 
 
 public class CanvasViewHandler {
-    private final IHandlerCallback callback;
+    private final ITaskCallback callback;
     private AppContext appContext;
     public boolean canEdit=true;
 
-    public CanvasViewHandler(AppContext appContext, IHandlerCallback callback) {
+    public CanvasViewHandler(AppContext appContext, ITaskCallback callback) {
         this.appContext = appContext;
         this.callback = callback;
         changed();
@@ -194,14 +194,19 @@ public class CanvasViewHandler {
         } else {
             pathToRemove = IntersectionUtils.getIntersectionPath(appContext, view, p1, p2);
 
-            if (pathToRemove != null) {
-                boolean f = pathToRemove.colors.remove(new Integer(appContext.selectedColor));
+
+            if (pathToRemove != null && pathToRemove.colors.contains(new Integer(appContext.selectedColor))) {
+                pathToRemove.colors.remove(new Integer(appContext.selectedColor));
 
                 if (pathToRemove.colors.size() == 0) {
                     appContext.app.paths.remove(pathToRemove);
                 }
+
+                changed();
+            } else {
+                pathToRemove = null;
             }
-            changed();
+
         }
 
         if (nodeToRemove == null && pathToRemove == null) {
@@ -210,8 +215,11 @@ public class CanvasViewHandler {
             p1 = Utils.translate(p1.x, p1.y, -appContext.dx, appContext.dy);
             p2 = Utils.translate(p2.x, p2.y, -appContext.dx, appContext.dy);
 
-            appContext.dx -= p2.x - p1.x;
-            appContext.dy += p2.y - p1.y;
+            float dx = appContext.dx - (p2.x - p1.x);
+            float dy = appContext.dy + (p2.y - p1.y);
+
+            callback.startTask(Ctes.SCROLL_SCREEN_TASK, 0f, 0f, dx, dy);
+
         }
     }
 
@@ -257,6 +265,10 @@ public class CanvasViewHandler {
             appContext.shadow.y = event.getY();
             appContext.connected = getClickedNode(view, event.getX(), event.getY()) != null;
             appContext.shadow.visible = true;
+
+            if (appContext.connected) {
+                callback.endTask(Ctes.CONNECTED_NODES_TASK);
+            }
         }else{
             appContext.connected = false;
         }
@@ -354,7 +366,7 @@ public class CanvasViewHandler {
 
         appContext.history.push(json);
         appContext.historyIndex = appContext.history.size() - 1;
-        callback.endTask(0);
+
     }
 
     public void click(CanvasView view, MotionEvent event) {
@@ -366,6 +378,7 @@ public class CanvasViewHandler {
 
         if (newnode == null) {
             newnode = addNode(view, event.getX(), event.getY());
+            callback.startTask(Ctes.NEW_NODE_TASK, newnode);
         } else {
             newnode.selected = !newnode.selected;
             return;

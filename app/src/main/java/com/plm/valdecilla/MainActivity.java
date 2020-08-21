@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements IHandlerCallback {
+public class MainActivity extends AppCompatActivity implements ITaskCallback {
 
     private CanvasViewAnimator canvasViewAnimator;
     private AppContext appContext = new AppContext();
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements IHandlerCallback 
 
         spinner.setAdapter(adapter);
 
-        canvasViewAnimator = new CanvasViewAnimator(appContext, canvasView);
+        canvasViewAnimator = new CanvasViewAnimator(appContext, canvasView, this);
 
     }
 
@@ -229,12 +229,20 @@ public class MainActivity extends AppCompatActivity implements IHandlerCallback 
 
 
     public void rotate90right(View view) {
-        canvasViewAnimator.animateAngle(appContext.angle, appContext.angle + 90);
+        if (appContext.animatingAngle) {
+            return;
+        }
+
+        startTask(Ctes.INC_DEC_ANGLE_TASK, appContext.angle, appContext.angle + 90);
     }
 
 
     public void rotate90left(View view) {
-        canvasViewAnimator.animateAngle(appContext.angle, appContext.angle - 90);
+        if (appContext.animatingAngle) {
+            return;
+        }
+
+        startTask(Ctes.INC_DEC_ANGLE_TASK, appContext.angle, appContext.angle - 90);
     }
 
 
@@ -258,7 +266,15 @@ public class MainActivity extends AppCompatActivity implements IHandlerCallback 
 
     @Override
     public void startTask(int task, Object... values) {
+        if (task == Ctes.NEW_NODE_TASK) {
+            canvasViewAnimator.animateNewNode(values[0]);
+        } else if (task == Ctes.SCROLL_SCREEN_TASK) {
+            canvasViewAnimator.animateDxDyScreen((Float) values[0], (Float) values[1], (Float) values[2], (Float) values[3]);
+        } else if (task == Ctes.INC_DEC_ANGLE_TASK) {
+            canvasViewAnimator.animateAngle((Float) values[0], (Float) values[1]);
+        } else if (task == Ctes.MOVE_NODE_TASK) {
 
+        }
     }
 
     @Override

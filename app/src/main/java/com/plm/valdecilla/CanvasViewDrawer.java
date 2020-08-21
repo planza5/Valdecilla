@@ -36,8 +36,12 @@ public class CanvasViewDrawer {
         for (Node node : context.app.nodes) {
             //trasladamos al origen 0,0
             Point p = Utils.traRoTra(node.x - context.dx, node.y + context.dy, canvas.getWidth() / 2, canvas.getHeight() / 2, context.angle);
-            //Utils.translate(p,-context.dx,context.dy);
-            canvas.drawCircle(p.x, p.y, Ctes.RADIUS, painterFillNodes);
+
+            if (node == context.animatedNode) {
+                canvas.drawCircle(p.x, p.y, context.animatedRadius, painterFillNodes);
+            } else {
+                canvas.drawCircle(p.x, p.y, Ctes.RADIUS, painterFillNodes);
+            }
 
             if (node.selected) {
                 painterStrokeNodes.setColor(Color.RED);
@@ -45,7 +49,12 @@ public class CanvasViewDrawer {
                 painterStrokeNodes.setColor(Color.BLACK);
             }
 
-            canvas.drawCircle(p.x, p.y, Ctes.RADIUS, painterStrokeNodes);
+            if (context.animatedNode == node) {
+                canvas.drawCircle(p.x, p.y, context.animatedRadius, painterStrokeNodes);
+            } else {
+                canvas.drawCircle(p.x, p.y, Ctes.RADIUS, painterStrokeNodes);
+            }
+
             float width = painterText.measureText(node.name);
             canvas.drawText(node.name,p.x-width/2,p.y-60,painterText);
 
@@ -58,7 +67,7 @@ public class CanvasViewDrawer {
         }
 
 
-        if (context.p1 != null && context.p2 != null && context.p3 != null) {
+        /*if (context.p1 != null && context.p2 != null && context.p3 != null) {
             context.p1 = Utils.traRoTra(context.p1.x - context.dx, context.p1.y + context.dy, canvas.getWidth() / 2, canvas.getHeight() / 2, context.angle);
             context.p2 = Utils.traRoTra(context.p2.x - context.dx, context.p2.y + context.dy, canvas.getWidth() / 2, canvas.getHeight() / 2, context.angle);
             context.p3 = Utils.traRoTra(context.p3.x - context.dx, context.p3.y + context.dy, canvas.getWidth() / 2, canvas.getHeight() / 2, context.angle);
@@ -70,18 +79,25 @@ public class CanvasViewDrawer {
             canvas.drawCircle(context.p3.x, context.p3.y, 20, painterStrokeNodes);
             canvas.drawCircle(context.p4.x, context.p4.y, 5, painterStrokeNodes);
             canvas.drawCircle(context.p5.x, context.p5.y, 5, painterStrokeNodes);
-        }
+        }*/
     }
 
 
     public void drawShadow(Canvas canvas) {
         if (context.clicked1 != null && context.shadow != null && context.shadow.visible) {
             painterStrokeShadow.setPathEffect(context.connected ? null : dottedEffect);
-            painterStrokeShadow.setColor(context.connected ? Color.BLACK : Color.GRAY);
+
+            int color = 0;
+
+            if (context.selectedColor == 0) {
+                color = Color.BLACK;
+            } else {
+                color = Ctes.COLORS[context.selectedColor];
+            }
+
+            painterStrokeShadow.setColor(color);
             Point p1 = new Point(context.clicked1.x - context.dx, context.clicked1.y + context.dy);
             p1 = Utils.traRoTra(p1.x, p1.y, canvas.getWidth() / 2, canvas.getHeight() / 2, context.angle);
-            //Point p2=Utils.traRoTra(context.shadow.x,context.shadow.y,canvas.getWidth()/2,canvas.getHeight()/2,context.dx,context.dy,AppState.angle);
-
             canvas.drawLine(p1.x, p1.y, context.shadow.x, context.shadow.y, painterStrokeShadow);
             canvas.drawCircle(context.shadow.x, context.shadow.y, Ctes.RADIUS, painterStrokeShadow);
         }
@@ -108,7 +124,9 @@ public class CanvasViewDrawer {
                 if (one.colors.get(i) == 0) {
                     painterStrokePaths.setColor(Color.BLACK);
                     painterStrokePaths.setPathEffect(dottedEffect);
+                    painterStrokePaths.setStrokeWidth(5);
                 } else {
+                    painterStrokePaths.setStrokeWidth(Ctes.PATH_LINES_STROKE_WIDTH);
                     painterStrokePaths.setColor(Ctes.COLORS[one.colors.get(i)]);
                     painterStrokePaths.setPathEffect(null);
                 }
