@@ -27,7 +27,7 @@ public class CanvasViewAnimator {
     public void animateAngle(float angleInit, float angleEnd) {
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(angleInit, angleEnd);
         valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator()); // increase the speed first and then decrease
-        valueAnimator.setDuration(200);
+        valueAnimator.setDuration(250);
         valueAnimator.addUpdateListener(new AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -99,6 +99,37 @@ public class CanvasViewAnimator {
             @Override
             public void onAnimationEnd(Animator animation) {
                 callback.endTask(Ctes.SCROLL_SCREEN_TASK);
+            }
+        });
+
+        objectAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+
+
+        objectAnimator.setDuration(300);
+        objectAnimator.start();
+    }
+
+    public void animateMoveNode(Object object, Float x, Float y) {
+        Node node = (Node) object;
+        Path path = new Path();
+        path.reset();
+        path.moveTo(node.x, node.y);
+        path.lineTo(x, y);
+
+
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(node, "x", "y", path);
+        objectAnimator.addUpdateListener(new
+                                                 AnimatorUpdateListener() {
+                                                     @Override
+                                                     public void onAnimationUpdate(ValueAnimator animation) {
+                                                         view.invalidate();
+                                                     }
+                                                 });
+
+        objectAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                callback.endTask(Ctes.MOVE_NODE_TASK);
             }
         });
 

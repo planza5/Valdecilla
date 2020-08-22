@@ -12,6 +12,7 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.plm.valdecilla.model.Box;
 import com.plm.valdecilla.model.Node;
 import com.plm.valdecilla.model.Path;
 import com.plm.valdecilla.utils.GsonUtils;
@@ -136,8 +137,9 @@ public class CanvasViewHandler {
         }
 
         if (canEdit && !existsNode) {
-            appContext.clicked1.x = p.x;
-            appContext.clicked1.y = p.y;
+            callback.startTask(Ctes.MOVE_NODE_TASK, appContext.clicked1, p.x, p.y);
+            //appContext.clicked1.x = p.x;
+            //appContext.clicked1.y = p.y;
             changed();
         }
     }
@@ -411,5 +413,40 @@ public class CanvasViewHandler {
 
 
     public void handleBox() {
+        float minX = Float.MAX_VALUE;
+        float maxX = Float.MIN_VALUE;
+        float minY = Float.MAX_VALUE;
+        float maxY = Float.MIN_VALUE;
+
+
+        int selecteds = 0;
+
+        for (Node one : appContext.app.nodes) {
+            if (!one.selected) {
+                continue;
+            }
+
+            selecteds++;
+
+            if (one.sx < minX) {
+                minX = one.sx;
+            }
+            if (one.sx > maxX) {
+                maxX = one.sx;
+            }
+            if (one.sy < minY) {
+                minY = one.sy;
+            }
+            if (one.sy > maxY) {
+                maxY = one.sy;
+            }
+        }
+
+        if (selecteds > 1) {
+            Box box = new Box(minX, minY, maxX, maxY);
+            appContext.app.boxes.add(box);
+        }
+
+
     }
 }

@@ -273,7 +273,7 @@ public class MainActivity extends AppCompatActivity implements ITaskCallback {
         } else if (task == Ctes.INC_DEC_ANGLE_TASK) {
             canvasViewAnimator.animateAngle((Float) values[0], (Float) values[1]);
         } else if (task == Ctes.MOVE_NODE_TASK) {
-
+            canvasViewAnimator.animateMoveNode(values[0], (Float) values[1], (Float) values[2]);
         }
     }
 

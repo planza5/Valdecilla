@@ -27,6 +27,13 @@ public class Node {
         this.id=Long.toString(new Random().nextLong());
     }
 
+    public void setX(float value) {
+        x = value;
+    }
+
+    public void setY(float value) {
+        y = value;
+    }
 
     public boolean isSelected(){
         return selected;
