@@ -23,7 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.plm.valdecilla.model.App;
-import com.plm.valdecilla.utils.GsonUtils;
+import com.plm.valdecilla.model.utils.GsonUtils;
 
 import java.io.InputStream;
 import java.io.OutputStream;

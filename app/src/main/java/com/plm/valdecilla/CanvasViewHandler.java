@@ -15,7 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import com.plm.valdecilla.model.Box;
 import com.plm.valdecilla.model.Node;
 import com.plm.valdecilla.model.Path;
-import com.plm.valdecilla.utils.GsonUtils;
+import com.plm.valdecilla.model.utils.GsonUtils;
 import com.plm.valdecilla.utils.IntersectionUtils;
 import com.plm.valdecilla.utils.MathUtils;
 import com.plm.valdecilla.utils.Utils;
