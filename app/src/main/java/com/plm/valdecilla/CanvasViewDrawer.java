@@ -8,6 +8,7 @@ import android.text.TextPaint;
 
 import com.plm.valdecilla.model.Node;
 import com.plm.valdecilla.model.Path;
+import com.plm.valdecilla.model.utils.CommonsCtes;
 import com.plm.valdecilla.utils.Utils;
 
 import java.util.Collections;
@@ -40,7 +41,7 @@ public class CanvasViewDrawer {
             if (node == context.animatedNode) {
                 canvas.drawCircle(p.x, p.y, context.animatedRadius, painterFillNodes);
             } else {
-                canvas.drawCircle(p.x, p.y, Ctes.RADIUS, painterFillNodes);
+                canvas.drawCircle(p.x, p.y, com.plm.valdecilla.Ctes.RADIUS, painterFillNodes);
             }
 
             if (node.selected) {
@@ -52,17 +53,19 @@ public class CanvasViewDrawer {
             if (context.animatedNode == node) {
                 canvas.drawCircle(p.x, p.y, context.animatedRadius, painterStrokeNodes);
             } else {
-                canvas.drawCircle(p.x, p.y, Ctes.RADIUS, painterStrokeNodes);
+                canvas.drawCircle(p.x, p.y, com.plm.valdecilla.Ctes.RADIUS, painterStrokeNodes);
             }
 
             float width = painterText.measureText(node.name);
             canvas.drawText(node.name,p.x-width/2,p.y-60,painterText);
 
-            String words[]=node.subnames.split("\n");
+            if (node.subnames != null && node.subnames.length() > 0) {
+                String words[] = node.subnames.split(",");
 
-            for(int i=0;i<words.length;i++){
-                width = painterText.measureText(words[i]);
-                canvas.drawText(words[i],p.x-width/2,p.y+90+40*i,painterText);
+                for (int i = 0; i < words.length; i++) {
+                    width = painterText.measureText(words[i]);
+                    canvas.drawText(words[i], p.x - width / 2, p.y + 90 + 40 * i, painterText);
+                }
             }
         }
 
@@ -92,14 +95,14 @@ public class CanvasViewDrawer {
             if (context.selectedColor == 0) {
                 color = Color.BLACK;
             } else {
-                color = Ctes.COLORS[context.selectedColor];
+                color = CommonsCtes.COLORS[context.selectedColor];
             }
 
             painterStrokeShadow.setColor(color);
             Point p1 = new Point(context.clicked1.x - context.dx, context.clicked1.y + context.dy);
             p1 = Utils.traRoTra(p1.x, p1.y, canvas.getWidth() / 2, canvas.getHeight() / 2, context.angle);
             canvas.drawLine(p1.x, p1.y, context.shadow.x, context.shadow.y, painterStrokeShadow);
-            canvas.drawCircle(context.shadow.x, context.shadow.y, Ctes.RADIUS, painterStrokeShadow);
+            canvas.drawCircle(context.shadow.x, context.shadow.y, com.plm.valdecilla.Ctes.RADIUS, painterStrokeShadow);
         }
     }
 
@@ -126,16 +129,16 @@ public class CanvasViewDrawer {
                     painterStrokePaths.setPathEffect(dottedEffect);
                     painterStrokePaths.setStrokeWidth(5);
                 } else {
-                    painterStrokePaths.setStrokeWidth(Ctes.PATH_LINES_STROKE_WIDTH);
-                    painterStrokePaths.setColor(Ctes.COLORS[one.colors.get(i)]);
+                    painterStrokePaths.setStrokeWidth(com.plm.valdecilla.Ctes.PATH_LINES_STROKE_WIDTH);
+                    painterStrokePaths.setColor(CommonsCtes.COLORS[one.colors.get(i)]);
                     painterStrokePaths.setPathEffect(null);
                 }
 
 
-                canvas.drawLine((float) (p1.x + Math.cos(normal) * (i - delta) * Ctes.PATH_LINES_STROKE_WIDTH),
-                        (float) (p1.y + Math.sin(normal) * (i - delta) * Ctes.PATH_LINES_STROKE_WIDTH),
-                        (float) (p2.x + Math.cos(normal) * (i - delta) * Ctes.PATH_LINES_STROKE_WIDTH),
-                        (float) (p2.y + Math.sin(normal) * (i - delta) * Ctes.PATH_LINES_STROKE_WIDTH),
+                canvas.drawLine((float) (p1.x + Math.cos(normal) * (i - delta) * com.plm.valdecilla.Ctes.PATH_LINES_STROKE_WIDTH),
+                        (float) (p1.y + Math.sin(normal) * (i - delta) * com.plm.valdecilla.Ctes.PATH_LINES_STROKE_WIDTH),
+                        (float) (p2.x + Math.cos(normal) * (i - delta) * com.plm.valdecilla.Ctes.PATH_LINES_STROKE_WIDTH),
+                        (float) (p2.y + Math.sin(normal) * (i - delta) * com.plm.valdecilla.Ctes.PATH_LINES_STROKE_WIDTH),
                         painterStrokePaths);
             }
 
@@ -166,15 +169,15 @@ public class CanvasViewDrawer {
 
         canvas.drawPath(arrow, painterFillArrow);
 
-        float incx = context.dx % Ctes.GRID;
-        float incy = context.dy % Ctes.GRID;
+        float incx = context.dx % com.plm.valdecilla.Ctes.GRID;
+        float incy = context.dy % com.plm.valdecilla.Ctes.GRID;
 
         for(int i=-10;i<10;i++) {
-            canvas.drawLine(-100, i*Ctes.GRID+incy, canvas.getWidth()+100, i*Ctes.GRID+incy, painterStrokeGrid);
+            canvas.drawLine(-100, i * com.plm.valdecilla.Ctes.GRID + incy, canvas.getWidth() + 100, i * com.plm.valdecilla.Ctes.GRID + incy, painterStrokeGrid);
         }
 
         for(int i=-10;i<10;i++) {
-            canvas.drawLine(i*Ctes.GRID-incx, -100, i*Ctes.GRID-incx, canvas.getHeight()+100, painterStrokeGrid);
+            canvas.drawLine(i * com.plm.valdecilla.Ctes.GRID - incx, -100, i * com.plm.valdecilla.Ctes.GRID - incx, canvas.getHeight() + 100, painterStrokeGrid);
         }
 
 
@@ -199,7 +202,7 @@ public class CanvasViewDrawer {
         painterStrokeShadow.setColor(Color.BLACK);
 
         painterStrokePaths.setStyle(Paint.Style.STROKE);
-        painterStrokePaths.setStrokeWidth(Ctes.PATH_LINES_STROKE_WIDTH);
+        painterStrokePaths.setStrokeWidth(com.plm.valdecilla.Ctes.PATH_LINES_STROKE_WIDTH);
         painterStrokePaths.setColor(Color.BLACK);
 
         painterStrokeWhite.setColor(Color.WHITE);

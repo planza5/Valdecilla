@@ -3,12 +3,14 @@ package com.plm.valdecilla;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.DisplayMetrics;
@@ -23,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.plm.valdecilla.model.App;
+import com.plm.valdecilla.model.utils.CommonsCtes;
 import com.plm.valdecilla.model.utils.GsonUtils;
 
 import java.io.InputStream;
@@ -76,24 +79,24 @@ public class MainActivity extends AppCompatActivity implements ITaskCallback {
 
         final List<String> items=new ArrayList();
 
-        for(int i = 0; i< Ctes.COLORS.length; i++){
+        for (int i = 0; i < CommonsCtes.COLORS.length; i++) {
             items.add("");
         }
 
         final Spinner spinner=(Spinner)findViewById(R.id.spinner);
-        spinner.setBackgroundColor(Ctes.COLORS[0]);
+        spinner.setBackgroundColor(CommonsCtes.COLORS[0]);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 appContext.selectedColor = position;
                 spinner.setBackground(getDrawable(R.drawable.custom_border));
-                spinner.setBackgroundColor(Ctes.COLORS[position]);
+                spinner.setBackgroundColor(CommonsCtes.COLORS[position]);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 spinner.setBackground(getDrawable(R.drawable.custom_border));
-                spinner.setBackgroundColor(Ctes.COLORS[0]);
+                spinner.setBackgroundColor(CommonsCtes.COLORS[0]);
             }
         });
 
@@ -102,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements ITaskCallback {
             public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                 View view=super.getDropDownView(position, convertView, parent);
                 view.setBackground(getDrawable(R.drawable.custom_border));
-                view.setBackgroundColor(Ctes.COLORS[position]);
+                view.setBackgroundColor(CommonsCtes.COLORS[position]);
                 return view;
             }
         };
