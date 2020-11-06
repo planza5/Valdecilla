@@ -3,6 +3,7 @@ package com.plm.valdecilla;
 import android.graphics.Color;
 
 public class Ctes {
+    //ESTO NO QUIERO QUE SALGA
     public static final int PATH_LINES_STROKE_WIDTH = 15;
     public static final float GRID = 200;
     public static final int INC_ANGLE=15;
