@@ -28,10 +28,16 @@ import com.plm.valdecilla.model.App;
 import com.plm.valdecilla.model.utils.CommonsCtes;
 import com.plm.valdecilla.model.utils.GsonUtils;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -156,15 +162,21 @@ public class MainActivity extends AppCompatActivity implements ITaskCallback {
             saveState();
         } else if(requestCode == LOAD && resultCode == RESULT_OK) {
             fileUri = data.getData();
-            StringBuilder sb=new StringBuilder();
+            StringBuilder sb = new StringBuilder();
 
-            try (InputStream in = getContentResolver().openInputStream(fileUri)) {
-                int content;
+            try {
+                InputStream is = getContentResolver().openInputStream(fileUri);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
 
-                while ((content = in.read()) != -1) {
-                    sb.append((char)content);
+                String line = reader.readLine();
+
+                while (line != null) {
+                    sb.append(line).append("\n");
+                    line = reader.readLine();
                 }
-            } catch (Exception e) {
+            } catch (FileNotFoundException | UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 
@@ -185,10 +197,10 @@ public class MainActivity extends AppCompatActivity implements ITaskCallback {
         app.paths = appContext.app.paths;
 
         try {
-            String json=GsonUtils.toJson(app);
-            OutputStream os=getContentResolver().openOutputStream(fileUri);
-            Writer out=new OutputStreamWriter(os,"ISO-8859-1");
-            out.write(new String(json.getBytes()));
+            String json = GsonUtils.toJson(app);
+            OutputStream os = getContentResolver().openOutputStream(fileUri);
+            Writer out = new OutputStreamWriter(os, StandardCharsets.UTF_8);
+            out.write(new String(json.getBytes(), StandardCharsets.UTF_8));
             out.flush();
             out.close();
             os.close();
