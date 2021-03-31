@@ -191,6 +191,7 @@ public class MainActivity extends AppCompatActivity implements ITaskCallback {
         }
     }
 
+
     private void saveState(){
         App app=new App();
         app.nodes = appContext.app.nodes;
