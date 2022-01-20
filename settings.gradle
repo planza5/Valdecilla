@@ -1,3 +1,3 @@
 include ':app',':model'
-project (':model').projectDir = new File(rootProject.projectDir,'../../Paths/app')
 rootProject.name='Valdecilla'
+project(':model').projectDir=new File(rootProject.projectDir,'../Paths/model')
