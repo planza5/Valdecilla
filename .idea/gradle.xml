@@ -11,9 +11,9 @@
         <option name="gradleJvm" value="Android Studio java home" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/../Paths/model" />
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/../ValdecillaModel/valdecilla-model" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
